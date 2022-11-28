@@ -770,28 +770,6 @@ urlpatterns = [
     re_path(r'^incm$',views.incm,name='incm'),
     re_path(r'^oincm$',views.oincm,name='oincm'),
     re_path(r'^cog$',views.cog,name='cog'),
-    re_path(r'^exp$',views.exp,name='exp'),
-
-
-        
-   
-    
-
-    
-
-
-    
-
-    
-
-
-
-    
-
-    
-
-    
-
-
+    re_path(r'^exp$',views.exp,name='exp'),   
     
 ]

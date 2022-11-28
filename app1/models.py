@@ -1441,7 +1441,6 @@ class purchasebill_item(models.Model):
     bill = models.ForeignKey(purchasebill, on_delete=models.CASCADE,null=True)
     cid = models.ForeignKey(company, on_delete=models.CASCADE,null=True)
     items = models.CharField(max_length=100,null=True)
-    itmdt = models.DateField(null=True)
     hsn = models.CharField(max_length=100,null=True)
     quantity = models.IntegerField(null=True)
     rate = models.CharField(max_length=100,null=True)

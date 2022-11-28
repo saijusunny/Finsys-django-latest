@@ -13501,8 +13501,7 @@ def profitandloss(request):
         for i in inv:
             sum2+=i.grandtotal
 
-        # ex = purchase_expense.objects.filter().values('expenseaccount').annotate(t1=Sum('amount'))
-        # ex = purchase_expense.objects.all()
+        # ex = expense2.objects.filter().values('account').annotate(t1=Sum('amount'))
         ex = expense2.objects.all()
         sum3 = 0
         for i in ex:
@@ -13510,7 +13509,7 @@ def profitandloss(request):
 
         sum4 = sum2-sum1
 
-        sumtot=sum1+sum2+sum3  
+        sumtot=sum4+sum3  
 
         context={'pur':pur,'sum1':sum1,'inv': inv,'sum2':sum2,'sumtot':sumtot,'ex':ex,'sum3':sum3,'sum4':sum4,'cmp1': cmp1}
 
@@ -13548,25 +13547,58 @@ def plreport3(request,id):
         else:
             return redirect('/')
         cmp1 = company.objects.get(id=request.session['uid'])
-        # x = id.split()
-        # x.append(" ")
-        # a = x[0]
-        # b = x[1]
-        # cu = a +" "+ b
+
+        toda = date.today()
+        tod = toda.strftime("%Y-%m-%d")
+
+        to=toda.strftime("%d-%m-%Y")
         # exp = expense2.objects.filter(account=id)
         exp = expense2.objects.get(id=id)
-        context = {'cmp1': cmp1, 'exp': exp}
+        context = {'cmp1': cmp1, 'exp': exp,'to':to,'tod':tod}
         if exp.account == 'Advertising and Marketing':
             exp1 = purchase_expense.objects.filter(expenseaccount='Advertising and Marketing')
             context = {'cmp1': cmp1, 'exp1': exp1,'exp': exp}
         elif exp.account == 'Audit Fee':
             exp2 = purchase_expense.objects.filter(expenseaccount='Audit Fee')
             context = {'cmp1': cmp1, 'exp2': exp2,'exp': exp}
+        elif exp.account == 'Automobile Expense':
+            exp3 = purchase_expense.objects.filter(expenseaccount='Automobile Expense')
+            context = {'cmp1': cmp1, 'exp3': exp3,'exp': exp}
+        elif exp.account == 'Bad Debt':
+            exp4 = purchase_expense.objects.filter(expenseaccount='Bad Debt')
+            context = {'cmp1': cmp1, 'exp4': exp4,'exp': exp}
+        elif exp.account == 'Bank Fee And Charges':
+            exp5 = purchase_expense.objects.filter(expenseaccount='Bank Fee And Charges')
+            context = {'cmp1': cmp1, 'exp5': exp5,'exp': exp}
+        elif exp.account == 'Automobile charges':
+            exp6 = purchase_expense.objects.filter(expenseaccount='Automobile charges')
+            context = {'cmp1': cmp1, 'exp6': exp6,'exp': exp}
+        elif exp.account == 'Deprieciation Expenses':
+            exp7 = purchase_expense.objects.filter(expenseaccount='Deprieciation Expenses')
+            context = {'cmp1': cmp1, 'exp7': exp7,'exp': exp}
+        elif exp.account == 'Documentation Charges':
+            exp8 = purchase_expense.objects.filter(expenseaccount='Documentation Charges')
+            context = {'cmp1': cmp1, 'exp8': exp8,'exp': exp}
+        elif exp.account == 'Electricity Expenses':
+            exp9 = purchase_expense.objects.filter(expenseaccount='Electricity Expenses')
+            context = {'cmp1': cmp1, 'exp9': exp9,'exp': exp}
+        elif exp.account == 'Food Expenses':
+            exp10 = purchase_expense.objects.filter(expenseaccount='Food Expenses')
+            context = {'cmp1': cmp1, 'exp10': exp10,'exp': exp}
+        elif exp.account == 'IT And Internet charges':
+            exp11 = purchase_expense.objects.filter(expenseaccount='IT And Internet charges')
+            context = {'cmp1': cmp1, 'exp11': exp11,'exp': exp}
+        elif exp.account == 'Labour Charges':
+            exp12 = purchase_expense.objects.filter(expenseaccount='Labour Charges')
+            context = {'cmp1': cmp1, 'exp12': exp12,'exp': exp}
+        elif exp.account == 'Miscellaneous Expenses':
+            exp13 = purchase_expense.objects.filter(expenseaccount='Miscellaneous Expenses')
+            context = {'cmp1': cmp1, 'exp13': exp13,'exp': exp}
+        elif exp.account == 'Printing And Stationary':
+            exp14 = purchase_expense.objects.filter(expenseaccount='Printing And Stationary')
+            context = {'cmp1': cmp1, 'exp14': exp14,'exp': exp}
         else:
             context = {'cmp1': cmp1, 'exp': exp}
-
-        # ex=purchase_expense.objects.filter(expenseaccount='Audit Fee')  
-        # context = {'cmp1': cmp1,'ex':ex}
         return render(request, 'app1/plreport3.html', context)
     return redirect('/')
 
@@ -29680,9 +29712,9 @@ def stocksummary1(request):
         elif filmeth == 'Custom':
             fromdate = request.POST['fper']
             todate = request.POST['tper']
-        elif filmeth == 'This month':
-            fromdate = toda.strftime("%Y-%m-01")
-            todate = toda.strftime("%Y-%m-31")
+        # elif filmeth == 'This month':
+        #     fromdate = toda.strftime("%Y-%m-01")
+        #     todate = toda.strftime("%Y-%m-31")
         elif filmeth == 'This financial year':
             if int(toda.strftime("%m")) >= 1 and int(toda.strftime("%m")) <= 3:
                 pyear = int(toda.strftime("%Y")) - 1
@@ -29696,29 +29728,29 @@ def stocksummary1(request):
             return redirect('stocksummary')
 
         item = itemtable.objects.filter(itmdate__gte=fromdate, itmdate__lte=todate)
-        for i in item:
-            itemname = i.name
+        # for i in item:
+        #     itemname = i.name
 
-            billitm = purchasebill_item.objects.all().filter(items=itemname)
-            qtyin=0
-            for j in billitm :
-                if j.quantity:
-                    qtyin+=j.quantity
+        #     billitm = purchasebill_item.objects.all().filter(items=itemname)
+        #     qtyin=0
+            # for j in billitm :
+            #     if j.quantity:
+            #         qtyin+=j.quantity
 
-            qtyout=0
-            tot1=0
-            tot2=0
-            debitm1 = purchasedebit1.objects.filter(items=itemname).all()
-            for j in debitm1 :
-                if j.quantity:
-                    tot1+=j.quantity
+            # qtyout=0
+            # tot1=0
+            # tot2=0
+            # debitm1 = purchasedebit1.objects.filter(items=itemname).all()
+            # for j in debitm1 :
+            #     if j.quantity:
+            #         tot1+=j.quantity
 
-            initm1 = invoice_item.objects.filter(product=itemname).all()
-            for j in initm1 :
-                if j.qty:
-                    tot2+=j.qty
+            # initm1 = invoice_item.objects.filter(product=itemname).all()
+            # for j in initm1 :
+            #     if j.qty:
+            #         tot2+=j.qty
 
-            qtyout = tot1+tot2
+            # qtyout = tot1+tot2
 
         qtyin1 = purchasebill_item.objects.filter().aggregate(t2=Sum('quantity'))
 
@@ -29740,7 +29772,7 @@ def stocksummary1(request):
    
         # stock = stockadjust.objects.filter(cid=cmp1)
         
-        context = {'item':item,'cmp1':cmp1,'qtyin':qtyin,'qtyin1':qtyin1,'qtyout1':qtyout1,'qtyout':qtyout}
+        context = {'item':item,'cmp1':cmp1,'qtyin1':qtyin1,'qtyout1':qtyout1}
         return render(request, 'app1/stocksummary.html', context)
         
 @login_required(login_url='regcomp')
@@ -29756,9 +29788,9 @@ def stockvaluation1(request):
         elif filmeth == 'Custom':
             fromdate = request.POST['fper']
             todate = request.POST['tper']
-        elif filmeth == 'This month':
-            fromdate = toda.strftime("%Y-%m-01")
-            todate = toda.strftime("%Y-%m-31")
+        # elif filmeth == 'This month':
+        #     fromdate = toda.strftime("%Y-%m-01")
+        #     todate = toda.strftime("%Y-%m-31")
         elif filmeth == 'This financial year':
             if int(toda.strftime("%m")) >= 1 and int(toda.strftime("%m")) <= 3:
                 pyear = int(toda.strftime("%Y")) - 1
