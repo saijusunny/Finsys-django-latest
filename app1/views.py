@@ -3387,6 +3387,33 @@ def invcreate2(request):
         inv2.invoiceno = int(inv2.invoiceno) + inv2.invoiceid
         inv2.save()
 
+        placosupply=request.POST['placosupply']
+        if placosupply == cmp1.state:
+            CGST = float(request.POST['CGST'])
+            accocgst = accounts1.objects.get(
+                name='Input CGST', cid=cmp1)
+            accocgst.balance = round(float(accocgst.balance + CGST), 2)
+            accocgst.save()
+            SGST = float(request.POST['SGST'])
+            accosgst = accounts1.objects.get(
+                name='Input SGST', cid=cmp1)
+            accosgst.balance = round(float(accosgst.balance + SGST), 2)
+            accosgst.save()
+        else:
+            IGST = float(request.POST['IGST'])
+            accoigst = accounts1.objects.get(
+                name='Input IGST', cid=cmp1)
+            accoigst.balance = round(
+                float(accoigst.balance + IGST), 2)
+            accoigst.save()
+
+        # tcs_amount = float(request.POST['tcs_amount'])
+        # accont = accounts1.objects.get(
+        #     name='TDS Payable',cid=cmp1)
+        # accont.balance = accont.balance - tcs_amount
+        # accont.save()
+
+
         product = request.POST.getlist("product[]")
         hsn  = request.POST.getlist("hsn[]")
         description = request.POST.getlist("description[]")
@@ -13260,16 +13287,39 @@ def balancesheet(request):
         cmp1 = company.objects.get(id=request.session['uid'])
         context = {'cmp1': cmp1}
         try:
-            tot = 0.0
-            if accounts1.objects.filter(acctype='Current Assets', cid=cmp1):
+            # tot = 0.0
+            # if accounts1.objects.filter(acctype='Current Assets', cid=cmp1):
+            #     acc = accounts1.objects.filter(
+            #         acctype='Current Assets', cid=cmp1)
+            #     for i in acc:
+            #         if i.cid == cmp1:
+            #             tot = tot + i.balance
+            #     context['account'] = acc
+            tot01 = 0.0
+            if accounts1.objects.filter(acctype='Cash', cid=cmp1):
                 acc = accounts1.objects.filter(
-                    acctype='Current Assets', cid=cmp1)
+                    acctype='Cash', cid=cmp1)
                 for i in acc:
                     if i.cid == cmp1:
-                        tot = tot + i.balance
+                        tot01 = tot01 + i.balance
                 context['account'] = acc
         except:
             pass
+        cashtot = tot01
+        context['cashtot'] = cashtot
+        try:
+            tot02 = 0.0
+            if accounts1.objects.filter(acctype='Bank', cid=cmp1):
+                acc = accounts1.objects.filter(
+                    acctype='Bank', cid=cmp1)
+                for i in acc:
+                    if i.cid == cmp1:
+                        tot02 = tot02 + i.balance
+                context['acc1'] = acc
+        except:
+            pass
+        banktot = tot02
+        context['banktot'] = banktot
         try:
             tot1 = 0.0
             if accounts.objects.filter(acctype='Current Assets', cid=cmp1):
@@ -13313,20 +13363,96 @@ def balancesheet(request):
                 context['tbank'] = totbank
         except:
             pass
-        taccountsreceivable = tot2 + tot3
-        tcurrentassets = tot + tot1 + taccountsreceivable + totbank
-        context['tar'] = taccountsreceivable
-        context['tca'] = tcurrentassets
         try:
-            tot4 = 0.0
-            if accounts1.objects.filter(acctype='Current Liabilities', cid=cmp1):
+            tot23 = 0.0
+            if accounts1.objects.filter(name='Input CGST', cid=cmp1):
                 acc = accounts1.objects.filter(
-                    acctype='Current Liabilities', cid=cmp1)
+                    name='Input CGST', cid=cmp1)
                 for i in acc:
-                    tot4 = tot4 + i.balance
-                context['account4'] = acc
+                    tot23 = tot23 + i.balance
+                context['acc8'] = acc
         except:
             pass
+        try:
+            tot24 = 0.0
+            if accounts1.objects.filter(name='Input SGST', cid=cmp1):
+                acc = accounts1.objects.filter(
+                    name='Input SGST', cid=cmp1)
+                for i in acc:
+                    tot24 = tot24 + i.balance
+                context['acc9'] = acc
+        except:
+            pass
+        try:
+            tot25 = 0.0
+            if accounts1.objects.filter(name='Input IGST', cid=cmp1):
+                acc = accounts1.objects.filter(
+                    name='Input IGST', cid=cmp1)
+                for i in acc:
+                    tot25 = tot25 + i.balance
+                context['acc10'] = acc
+        except:
+            pass
+        gsttot1 = tot23+tot24+tot25
+        context['gsttot1'] = gsttot1
+
+        taccountsreceivable = tot2 + tot3
+        tcurrentassets = cashtot + banktot + tot1 + taccountsreceivable + totbank + gsttot1
+        context['tar'] = taccountsreceivable
+        context['tca'] = tcurrentassets
+
+        # try:
+        #     tot4 = 0.0
+        #     if accounts1.objects.filter(acctype='Current Liabilities', cid=cmp1):
+        #         acc = accounts1.objects.filter(
+        #             acctype='Current Liabilities', cid=cmp1)
+        #         for i in acc:
+        #             tot4 = tot4 + i.balance
+        #         context['account4'] = acc
+        # except:
+        #     pass
+        try:
+            tot4 = 0.0
+            if accounts1.objects.filter(name='TDS Payable', cid=cmp1):
+                acc = accounts1.objects.filter(
+                    name='TDS Payable', cid=cmp1)
+                for i in acc:
+                    tot4 = tot4 + i.balance
+                context['acc4'] = acc
+        except:
+            pass
+        try:
+            tot20 = 0.0
+            if accounts1.objects.filter(name='Output CGST', cid=cmp1):
+                acc = accounts1.objects.filter(
+                    name='Output CGST', cid=cmp1)
+                for i in acc:
+                    tot20 = tot20 + i.balance
+                context['acc5'] = acc
+        except:
+            pass
+        try:
+            tot21 = 0.0
+            if accounts1.objects.filter(name='Output SGST', cid=cmp1):
+                acc = accounts1.objects.filter(
+                    name='Output SGST', cid=cmp1)
+                for i in acc:
+                    tot21 = tot21 + i.balance
+                context['acc6'] = acc
+        except:
+            pass
+        try:
+            tot22 = 0.0
+            if accounts1.objects.filter(name='Output IGST', cid=cmp1):
+                acc = accounts1.objects.filter(
+                    name='Output IGST', cid=cmp1)
+                for i in acc:
+                    tot22 = tot22 + i.balance
+                context['acc7'] = acc
+        except:
+            pass
+        gsttot = tot20+tot21+tot22
+        context['gsttot'] = gsttot
         try:
             tot5 = 0.0
             if accounts.objects.filter(acctype='Current Liabilities', cid=cmp1):
@@ -13358,7 +13484,7 @@ def balancesheet(request):
         except:
             pass
         taccountspayable = tot6 + tot7
-        tcurrentliabilties = tot4 + tot5 + taccountspayable
+        tcurrentliabilties = tot4 + tot5 + taccountspayable + gsttot
         context['tap'] = taccountspayable
         context['tcl'] = tcurrentliabilties
         try:
@@ -31268,7 +31394,7 @@ def createbill(request):
             vname = request.POST['vendor_name']
             baddress = request.POST['billing_address']
             bill_no= '1000'
-            supply=request.POST['sourceofsupply']
+            sourceofsupply=request.POST['sourceofsupply']
             destsupply=request.POST['destiofsupply']
             branch=request.POST['branch']
             reference=request.POST['reference']
@@ -31285,7 +31411,7 @@ def createbill(request):
             igst=request.POST['igst']
             tax_amount=request.POST['tax_amount']
             tcs=request.POST['tcs']
-            tcs_amount=request.POST['tcs']
+            tcs_amount=request.POST['tcs_amount']
             round_off=request.POST['round_off']
             grand_total=request.POST['grand_total']
             balance_due=request.POST['balance_due']
@@ -31293,7 +31419,7 @@ def createbill(request):
             note=request.POST['note']
 
             billed = purchasebill(vendor_name=vname,billing_address=baddress,
-                                    sourceofsupply=supply,
+                                    sourceofsupply=sourceofsupply,
                                     destiofsupply=destsupply,branch=branch,reference=reference,
                                     contact_name=contact_name,deliverto=deliverto,
                                     date=date,deliver_date=deliver_dt,
@@ -31319,6 +31445,31 @@ def createbill(request):
             statment2.balance = billed.balance_due
             statment2.payments = billed.grand_total
             statment2.save()
+
+            if sourceofsupply == cmp1.state:
+                cgst = float(request.POST['cgst'])
+                accocgst = accounts1.objects.get(
+                    name='Output CGST', cid=cmp1)
+                accocgst.balance = round(float(accocgst.balance - cgst), 2)
+                accocgst.save()
+                sgst = float(request.POST['sgst'])
+                accosgst = accounts1.objects.get(
+                    name='Output SGST', cid=cmp1)
+                accosgst.balance = round(float(accosgst.balance - sgst), 2)
+                accosgst.save()
+            else:
+                igst = float(request.POST['igst'])
+                accoigst = accounts1.objects.get(
+                    name='Output IGST', cid=cmp1)
+                accoigst.balance = round(
+                    float(accoigst.balance - igst), 2)
+                accoigst.save()
+
+            tcs_amount = float(request.POST['tcs_amount'])
+            accont = accounts1.objects.get(
+                name='TDS Payable',cid=cmp1)
+            accont.balance = accont.balance - tcs_amount
+            accont.save()
 
             items = request.POST.getlist("items[]")
             hsn = request.POST.getlist("hsn[]")
@@ -32343,20 +32494,325 @@ def demo(request):
         return render(request,'app1/demo.html',{'cmp1': cmp1,'vndr':vndr})
     return redirect('demo') 
 
-@login_required(login_url='regcomp')
 def bnnk(request):
-    
+    cmp1 = company.objects.get(id=request.session["uid"])
     i=accounts1.objects.filter(acctype='Bank')
     c=accounts1.objects.filter(acctype='Cash')
     u=accounts1.objects.filter(acctype='Undepposited Funds')
     
-    context={'i':i,'c':c,'u':u}
+    context={'i':i,'c':c,'u':u,'cmp1':cmp1}
     return render(request,'app1/bnk.html',context)
 
+
+@login_required(login_url='regcomp')
 def bnk1(request,pk):
+
     bk=accounts1.objects.get(accounts1id=pk)
-    context={'bk':bk,}
+    customers=customer.objects.all()
+    vendors=vendor.objects.all()
+    cust_pym = customer_payment.objects.filter(accounts1id_id=pk)
+    pym_item = vendor_payment.objects.filter(accounts1id_id=pk)
+    exppenses=expense_banking.objects.filter(accounts1id_id=pk)
+    cmp1 = company.objects.get(id=request.session["uid"])
+    context={'bk':bk,
+    'cust_pym': cust_pym,
+    'pym_item':pym_item,
+    'cmp1': cmp1,
+    'exppenses':exppenses,
+    'customers':customers,
+    'vendors':vendors,
+    
+    }
     return render(request,"app1/bnk1.html",context)
+
+@login_required(login_url='regcomp')
+def vend_view(request,pk):
+    
+    cmp1 = company.objects.get(id=request.session["uid"])
+    vend_dat=vendor_payment.objects.get(vendorpymid=pk)
+    customers=customer.objects.all()
+    vendors=vendor.objects.all()
+    
+    context={
+        'vend_dat':vend_dat,
+        'cmp1':cmp1,
+        'customers':customers,
+        'vendors':vendors,
+    }
+    return render(request,'app1/bank_vend_view.html',context)
+@login_required(login_url='regcomp')
+def deletevend(request,pk):
+    cmp1 = company.objects.get(id=request.session['uid'])
+    custom = vendor_payment.objects.get(vendorpymid=pk, cid=cmp1)
+
+    bnk_id=custom.accounts1id_id
+    bnk_bal=accounts1.objects.get(accounts1id=bnk_id)
+    bank_bl_val=bnk_bal.balance
+    crnt_bal=custom.amount_received
+    final_val=float(bank_bl_val)+float(crnt_bal)
+    bnk_bal.balance=final_val
+    bnk_bal.save()
+    custom.delete()
+    return redirect('bnnk')
+@login_required(login_url='regcomp')
+def vend_edit(request,pk):
+    if request.method =="POST":
+        bk=vendor_payment.objects.get(vendorpymid=pk)
+        bnk_id=bk.accounts1id_id
+        bnk_bal=accounts1.objects.get(accounts1id=bnk_id)
+        bank_bl_val=bnk_bal.balance
+        crnt_bal=bk.amount_received
+        final_val=float(bank_bl_val)+float(crnt_bal)
+
+        bk.customer=request.POST.get('customer')
+        bk.vendor=request.POST.get('vendor')
+        bk.amount_received=request.POST.get('amount')
+        bk.des=request.POST.get('description')
+        bk.date=request.POST.get('tdate')
+        bk.account=request.POST.get('account')
+        bk.paid_through=request.POST.get('paid')
+        bk.ref_no=request.POST.get('refenrence')
+                
+
+        edited_val=request.POST.get('amount')
+        remin_bal=float(final_val)-float(edited_val)
+        bk.running_bal=remin_bal
+        bk.save()
+        bnk_bal.balance=remin_bal
+        bnk_bal.save()
+        return redirect('bnnk')
+    else:
+        return redirect('bnnk')
+
+@login_required(login_url='regcomp')
+
+def cus_view(request,pk):
+    
+    cmp1 = company.objects.get(id=request.session["uid"])
+    exp_dat=customer_payment.objects.get(customerpymid=pk)
+    customers=customer.objects.all()
+    vendors=vendor.objects.all()
+    
+    context={
+        'cus_dat':exp_dat,
+        'cmp1':cmp1,
+        'customers':customers,
+        'vendors':vendors,
+    }
+    return render(request,'app1/bank_cust_view.html',context)
+@login_required(login_url='regcomp')
+def deletecus(request,pk):
+    cmp1 = company.objects.get(id=request.session['uid'])
+    custom = customer_payment.objects.get(customerpymid=pk, cid=cmp1)
+
+    bnk_id=custom.accounts1id_id
+    bnk_bal=accounts1.objects.get(accounts1id=bnk_id)
+    bank_bl_val=bnk_bal.balance
+    crnt_bal=custom.amount_received
+    final_val=float(bank_bl_val)-float(crnt_bal)
+    bnk_bal.balance=final_val
+    bnk_bal.save()
+    custom.delete()
+    return redirect('bnnk')
+@login_required(login_url='regcomp')
+def cus_edit(request,pk):
+    if request.method =="POST":
+        bk=customer_payment.objects.get(customerpymid=pk)
+        bnk_id=bk.accounts1id_id
+        bnk_bal=accounts1.objects.get(accounts1id=bnk_id)
+        bank_bl_val=bnk_bal.balance
+        crnt_bal=bk.amount_received
+        final_val=float(bank_bl_val)-float(crnt_bal)
+
+        bk.customer=request.POST.get('customername')
+        bk.vendor=request.POST.get('vendor')
+        bk.amount_received=request.POST.get('amt_cu')
+        bk.date=request.POST.get('cus_date')
+        bk.received_through=request.POST.get('rese_to')
+        bk.paym_ref_no=request.POST.get('py_ref')
+        bk.bnk_ref_no=request.POST.get('bnk_ref')
+        bk.file = request.FILES.get('pic')
+        bk.des= request.POST.get('type_details')
+
+        edited_val=request.POST.get('amt_cu')
+        remin_bal=float(final_val)+float(edited_val)
+        bk.running_bal=remin_bal
+        bk.save()
+        bnk_bal.balance=remin_bal
+        bnk_bal.save()
+        return redirect('bnnk')
+    else:
+        return redirect('bnnk')
+
+@login_required(login_url='regcomp')
+def exp_view(request,pk):
+    
+    cmp1 = company.objects.get(id=request.session["uid"])
+    exp_dat=expense_banking.objects.get(expenseid=pk)
+    customers=customer.objects.all()
+    vendors=vendor.objects.all()
+    
+    context={
+        'exp_dat':exp_dat,
+        'cmp1':cmp1,
+        'customers':customers,
+        'vendors':vendors,
+    }
+    return render(request,'app1/bank_exp_view.html',context)
+@login_required(login_url='regcomp')
+def exp_edit(request,pk):
+    if request.method =="POST":
+        bk=expense_banking.objects.get(expenseid=pk)
+        bnk_id=bk.accounts1id_id
+        bnk_bal=accounts1.objects.get(accounts1id=bnk_id)
+        bank_bl_val=bnk_bal.balance
+        crnt_bal=bk.amount
+        final_val=float(bank_bl_val)+float(crnt_bal)
+
+        bk.expenseaccount=request.POST.get('acc_type')
+        bk.vendor=request.POST.get('vendor_nm')
+        bk.amount=request.POST.get('amount')
+        bk.note=request.POST.get('Type details')
+        bk.date=request.POST.get('dt_exp')
+        
+        bk.reference=request.POST.get('ref_no')
+        bk.customer=request.POST.get('cust')
+        bk.file = request.FILES.get('pic')
+        edited_val=request.POST.get('amount')
+        remin_bal=float(final_val)-float(edited_val)
+        bk.running_bal=remin_bal
+        bk.save()
+        bnk_bal.balance=remin_bal
+        bnk_bal.save()
+        
+        
+        return redirect('bnnk')
+    else:
+        return redirect('bnnk')
+@login_required(login_url='regcomp')
+def deleteexp(request, pk):
+        cmp1 = company.objects.get(id=request.session['uid'])
+        custom = expense_banking.objects.get(expenseid=pk, cid=cmp1)
+
+        bnk_id=custom.accounts1id_id
+        bnk_bal=accounts1.objects.get(accounts1id=bnk_id)
+        bank_bl_val=bnk_bal.balance
+        crnt_bal=custom.amount
+        final_val=float(bank_bl_val)+float(crnt_bal)
+        bnk_bal.balance=final_val
+
+        bnk_bal.save()
+
+        custom.delete()
+        return redirect('bnnk')
+
+@login_required(login_url='regcomp')
+def add_expenses(request,pk):
+    if request.method =="POST":
+        bk=accounts1.objects.get(accounts1id=pk)
+        exp_acnt=request.POST.get('acc_type')
+        vendor_nme=request.POST.get('vendor_nm')
+        amount=request.POST.get('amount')
+        type_details=request.POST.get('Type details')
+        dte_exp=request.POST.get('dt_exp')
+        
+        ref_no=request.POST.get('ref_no')
+        customer=request.POST.get('cust')
+        file = request.FILES.get('pic')
+        cid=company.objects.get(id=request.session["uid"])
+
+        sum1=bk.balance
+        
+        running_bl=float(sum1)-float(amount)
+
+        expenses = expense_banking(expenseaccount=exp_acnt,vendor=vendor_nme,amount=amount,note=type_details,date=dte_exp,reference=ref_no,customer=customer,file=file,cid=cid,running_bal=running_bl,accounts1id_id=pk)
+        expenses.save()
+        bk.balance=running_bl
+        bk.save()
+        return redirect('bnnk')
+    else:
+        return redirect('bnnk')
+
+
+    
+@login_required(login_url='regcomp')
+def payment_vnk(request,pk):
+    if request.method =="POST":
+        bk=accounts1.objects.get(accounts1id=pk)
+        cust_nm=request.POST.get('customername')
+        vendor=request.POST.get('vendor')
+        amt_cu=request.POST.get('amt_cu')
+        type_details=request.POST.get('type_details')
+        cus_date=request.POST.get('cus_date')
+        rese_to=request.POST.get('rese_to')
+        py_ref=request.POST.get('py_ref')
+        cid=company.objects.get(id=request.session["uid"])
+        bnk_ref=request.POST.get('bnk_ref')
+        cmp1 = company.objects.get(id=request.session["uid"])
+        file = request.FILES.get('pic')
+        print(file)
+        sum1=bk.balance
+        
+        running_bl=float(sum1)+float(amt_cu)
+
+        pym=customer_payment(customer=cust_nm,
+                            vendor=vendor,
+                            amount_received=amt_cu,
+                            des=type_details,
+                            date=cus_date,
+                            received_through=rese_to,
+                            paym_ref_no=py_ref,
+                            bnk_ref_no=bnk_ref,
+                            file = file,
+                            cid=cmp1,
+                            running_bal=running_bl,
+                            accounts1id_id=pk
+                            )
+        pym.save()
+        bk.balance=running_bl
+        bk.save()
+        return redirect('bnnk')
+    else:
+       return redirect('bnnk') 
+
+@login_required(login_url='regcomp')
+def payment_vendor(request,pk):
+    if request.method =="POST":
+        bk=accounts1.objects.get(accounts1id=pk)
+        print(bk)
+        cust_nm=request.POST.get('customer')
+        vendor=request.POST.get('vendor')
+        amt_cu=request.POST.get('amount')
+        type_details=request.POST.get('description')
+        cus_date=request.POST.get('tdate')
+        acc=request.POST.get('account')
+        paid=request.POST.get('paid')
+        ref=request.POST.get('refenrence')
+        cid=company.objects.get(id=request.session["uid"])
+        cmp1 = company.objects.get(id=request.session["uid"])
+        cust_nm=request.POST.get('customer')
+        sum1=bk.balance
+        
+        running_bl=float(sum1)-float(amt_cu)
+        pyms=vendor_payment(customer=cust_nm,
+                            vendor=vendor,
+                            amount_received=amt_cu,
+                            des=type_details,
+                            date=cus_date,
+                            paid_through=paid,
+                            ref_no=ref,
+                            account=acc,
+                            cid=cmp1,
+                            running_bal=running_bl,
+                            accounts1id_id=pk
+                            )
+        pyms.save()
+
+        bk.balance=running_bl
+        bk.save()
+        return redirect('bnnk')
+    else:
+        return redirect('bnnk')
 
 def accpayment(request):
     cmp1 = company.objects.get(id=request.session["uid"])

@@ -770,6 +770,19 @@ urlpatterns = [
     re_path(r'^incm$',views.incm,name='incm'),
     re_path(r'^oincm$',views.oincm,name='oincm'),
     re_path(r'^cog$',views.cog,name='cog'),
-    re_path(r'^exp$',views.exp,name='exp'),   
+    re_path(r'^exp$',views.exp,name='exp'),
+
+    re_path(r'^add_expenses/(?P<pk>\d+)$',views.add_expenses,name='add_expenses'),
+    re_path(r'^payment_vnk/(?P<pk>\d+)$',views.payment_vnk,name='payment_vnk'),
+    re_path(r'^payment_vendor/(?P<pk>\d+)$',views.payment_vendor,name='payment_vendor'),
+    re_path(r'^exp_view/(?P<pk>\d+)$',views.exp_view,name='exp_view'),
+    re_path(r'^exp_edit/(?P<pk>\d+)$',views.exp_edit,name='exp_edit'),
+    re_path(r'^deleteexp/(?P<pk>\d+)$',views.deleteexp,name='deleteexp'),
+    re_path(r'^cus_view/(?P<pk>\d+)$',views.cus_view,name='cus_view'),
+    re_path(r'^cus_edit/(?P<pk>\d+)$',views.cus_edit,name='cus_edit'),
+    re_path(r'^deletecus/(?P<pk>\d+)$',views.deletecus,name='deletecus'),
+    re_path(r'^vend_view/(?P<pk>\d+)$',views.vend_view,name='vend_view'),
+    re_path(r'^vend_edit/(?P<pk>\d+)$',views.vend_edit,name='vend_edit'),
+    re_path(r'^deletevend/(?P<pk>\d+)$',views.deletevend,name='deletevend'),
     
 ]

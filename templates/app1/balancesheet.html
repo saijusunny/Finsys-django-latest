@@ -97,16 +97,47 @@
                                 <tr>
                                     <td style="color: black; padding-left: 30px;"><b>Current Assets</b></td>
                                 </tr>
+                                <tr><td style="color: black; padding-left: 60px;"><b>Cash</b></td></tr>
                                 {% for i in account %}
                                     {% if i.balance != 0.0 %}
                                         <tr>
                                             <td class="center font-weight-light"
-                                                style="color: black; width: 85%; padding-left: 60px">{{ i.name }}</td>
+                                                style="color: black; width: 85%; padding-left: 90px">{{ i.name }}</td>
                                             <td class="center font-weight-light"
                                                 style="color: black;">{{ i.balance }}</td>
                                         </tr>
                                     {% endif %}
                                 {% endfor %}
+                                <tr>
+                                    <td style="color: black; padding-left: 60px; width: 85%;" class="border-secondary">
+                                        <b>Total for Cash</b>
+                                    </td>
+                                    <td style="color: black;" class="center font-weight-light font-weight-bold border-secondary">
+                                        {{ cashtot }}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="color: black; padding-left: 60px;" class="border-secondary"><b>Bank</b></td>
+                                    <td style="color: black; padding-left: 50px;" class="border-secondary"><b></b></td>
+                                </tr>
+                                {% for i in acc1 %}
+                                    {% if i.balance != 0.0 %}
+                                        <tr>
+                                            <td class="center font-weight-light"
+                                                style="color: black; width: 85%; padding-left: 90px">{{ i.name }}</td>
+                                            <td class="center font-weight-light"
+                                                style="color: black;">{{ i.balance }}</td>
+                                        </tr>
+                                    {% endif %}
+                                {% endfor %}
+                                <tr>
+                                    <td style="color: black; padding-left: 60px; width: 85%;" class="border-secondary">
+                                        <b>Total for Bank</b>
+                                    </td>
+                                    <td style="color: black;" class="center font-weight-light font-weight-bold border-secondary">
+                                        {{ banktot }}
+                                    </td>
+                                </tr>
                                 {% for i in account1 %}
                                     {% if i.balance != 0.0 %}
                                         <tr>
@@ -118,14 +149,10 @@
                                     {% endif %}
                                 {% endfor %}
                                 <tr>
-                                    <td style="color: black; padding-left: 60px;">Bank<b></b>
+                                    <td style="color: black; padding-left: 60px;" class="border-secondary">
+                                        <b>Account Receivable(Debtors)</b>
                                     </td>
-                                    <td style="color: black;"
-                                        class="center font-weight-light">{{ tbank }}</td>
-                                </tr>
-                                <tr>
-                                    <td style="color: black; padding-left: 60px;"><b>Account Receivable(Debtors)</b>
-                                    </td>
+                                    <td style="color: black; padding-left: 50px;" class="border-secondary"><b></b></td>
                                 </tr>
                                 {% for i in account2 %}
                                     {% if i.balance != 0.0 %}
@@ -154,6 +181,48 @@
                                         class="center font-weight-light font-weight-bold border-secondary">{{ tar }}</td>
                                 </tr>
                                 <tr>
+                                    <td style="color: black; padding-left: 60px;" class="border-secondary"><b>GST Receivable</b></td>
+                                    <td style="color: black; padding-left: 60px;" class="border-secondary"><b></b></td>
+                                </tr>
+                                {% for i in acc8 %}
+                                    {% if i.balance != 0.0 %}
+                                        <tr>
+                                            <td class="center font-weight-light"
+                                                style="color: black; width: 85%; padding-left: 90px">{{ i.name }}</td>
+                                            <td class="center font-weight-light"
+                                                style="color: black;">{{ i.balance }}</td>
+                                        </tr>
+                                    {% endif %}
+                                {% endfor %}
+                                {% for i in acc9 %}
+                                    {% if i.balance != 0.0 %}
+                                        <tr>
+                                            <td class="center font-weight-light"
+                                                style="color: black; width: 85%; padding-left: 90px">{{ i.name }}</td>
+                                            <td class="center font-weight-light"
+                                                style="color: black;">{{ i.balance }}</td>
+                                        </tr>
+                                    {% endif %}
+                                {% endfor %}
+                                {% for i in acc10 %}
+                                    {% if i.balance != 0.0 %}
+                                        <tr>
+                                            <td class="center font-weight-light"
+                                                style="color: black; width: 85%; padding-left: 90px">{{ i.name }}</td>
+                                            <td class="center font-weight-light"
+                                                style="color: black;">{{ i.balance }}</td>
+                                        </tr>
+                                    {% endif %}
+                                {% endfor %}
+                                <tr>
+                                    <td style="color: black; padding-left: 60px; width: 85%;" class="border-secondary">
+                                        <b>Total for GST Receivable</b>
+                                    </td>
+                                    <td style="color: black;" class="center font-weight-light font-weight-bold border-secondary">
+                                        {{ gsttot1 }}
+                                    </td>
+                                </tr>
+                                <tr>
                                     <td style="color: black; padding-left: 30px; width: 85%;" class="border-secondary">
                                         <b>Total Current Assets</b></td>
                                     <td style="color: black;"
@@ -180,16 +249,59 @@
                                 <tr>
                                     <td style="color: black; padding-left: 30px;"><b>Current Liabilities</b></td>
                                 </tr>
-                                {% for i in account4 %}
+                                {% for i in acc4 %}
                                     {% if i.balance != 0.0 %}
                                         <tr>
-                                            <td class="center font-weight-light"
-                                                style="color: black; width: 85%; padding-left: 60px">{{ i.name }}</td>
+                                            <td class="center"
+                                                style="color: black; width: 85%; padding-left: 60px"><b>{{ i.name }}</b></td>
                                             <td class="center font-weight-light"
                                                 style="color: black;">{{ i.balance }}</td>
                                         </tr>
                                     {% endif %}
                                 {% endfor %}
+                                <tr>
+                                    <td style="color: black; padding-left: 60px;" class="border-secondary"><b>GST Payable</b></td>
+                                    <td style="color: black; padding-left: 60px;" class="border-secondary"><b></b></td>
+                                </tr>
+                                {% for i in acc5 %}
+                                    {% if i.balance != 0.0 %}
+                                        <tr>
+                                            <td class="center font-weight-light"
+                                                style="color: black; width: 85%; padding-left: 90px">{{ i.name }}</td>
+                                            <td class="center font-weight-light"
+                                                style="color: black;">{{ i.balance }}</td>
+                                        </tr>
+                                    {% endif %}
+                                {% endfor %}
+                                {% for i in acc6 %}
+                                    {% if i.balance != 0.0 %}
+                                        <tr>
+                                            <td class="center font-weight-light"
+                                                style="color: black; width: 85%; padding-left: 90px">{{ i.name }}</td>
+                                            <td class="center font-weight-light"
+                                                style="color: black;">{{ i.balance }}</td>
+                                        </tr>
+                                    {% endif %}
+                                {% endfor %}
+                                {% for i in acc7 %}
+                                    {% if i.balance != 0.0 %}
+                                        <tr>
+                                            <td class="center font-weight-light"
+                                                style="color: black; width: 85%; padding-left: 90px">{{ i.name }}</td>
+                                            <td class="center font-weight-light"
+                                                style="color: black;">{{ i.balance }}</td>
+                                        </tr>
+                                    {% endif %}
+                                {% endfor %}
+                                <tr>
+                                    <td style="color: black; padding-left: 60px; width: 85%;" class="border-secondary">
+                                        <b>Total for GST Payable</b>
+                                    </td>
+                                    <td style="color: black;" class="center font-weight-light font-weight-bold border-secondary">
+                                        {{ gsttot }}
+                                    </td>
+                                </tr>
+
                                 {% for i in account5 %}
                                     {% if i.balance != 0.0 %}
                                         <tr>
@@ -201,7 +313,8 @@
                                     {% endif %}
                                 {% endfor %}
                                 <tr>
-                                    <td style="color: black; padding-left: 60px;"><b>Accounts Payable(Creditors)</b>
+                                    <td style="color: black; padding-left: 60px;" class="border-secondary"><b>Accounts Payable(Creditors)</b>
+                                    <td style="color: black; padding-left: 60px;" class="border-secondary"><b></b>
                                     </td>
                                 </tr>
                                 {% for i in account6 %}
