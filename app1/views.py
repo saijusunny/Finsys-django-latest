@@ -3387,6 +3387,25 @@ def invcreate2(request):
         inv2.invoiceno = int(inv2.invoiceno) + inv2.invoiceid
         inv2.save()
 
+        grandtotal = float(request.POST['grandtotal'])
+        acc = accounts1.objects.get(
+            name='Account Receivable(Debtors)', cid=cmp1)
+        if grandtotal != 0:
+            if accounts1.objects.get(name='Account Receivable(Debtors)', cid=cmp1):
+                acc.balance = float(acc.balance - grandtotal)
+                acc.save()
+            else:
+                pass
+        else:
+            pass
+        try:
+            if accounts1.objects.get(name='Sales', cid=cmp1):
+                acc = accounts1.objects.get(name='Sales', cid=cmp1)
+                acc.balance = float(acc.balance - grandtotal)
+                acc.save()
+        except:
+            pass
+
         placosupply=request.POST['placosupply']
         if placosupply == cmp1.state:
             CGST = float(request.POST['CGST'])
@@ -13393,7 +13412,7 @@ def balancesheet(request):
                 context['acc10'] = acc
         except:
             pass
-        gsttot1 = tot23+tot24+tot25
+        gsttot1 = round(float(tot23+tot24+tot25))
         context['gsttot1'] = gsttot1
 
         taccountsreceivable = tot2 + tot3
@@ -13451,7 +13470,7 @@ def balancesheet(request):
                 context['acc7'] = acc
         except:
             pass
-        gsttot = tot20+tot21+tot22
+        gsttot = round(float(tot20+tot21+tot22))
         context['gsttot'] = gsttot
         try:
             tot5 = 0.0
@@ -13600,7 +13619,7 @@ def balancesheet(request):
                       (texpences + toexpences)
         print(tincome, tcogs, texpences, toexpences)
         totequity = tequity + proandloss
-        tlande = tcurrentliabilties + totequity
+        tlande = round(float(tcurrentliabilties + totequity))
         context['proandloss'] = proandloss
         context['totequity'] = totequity
         context['tlande'] = tlande
@@ -13617,27 +13636,42 @@ def profitandloss(request):
             return redirect('/')
         cmp1 = company.objects.get(id=request.session['uid'])
         
-        pur=purchasebill.objects.all()
-        sum1=0
-        for i in pur:
-            sum1+=i.grand_total
+        # pur=purchasebill.objects.all()
+        # sum1=0
+        # for i in pur:
+        #     sum1+=i.grand_total
         
-        inv = invoice.objects.filter()
+        # inv = invoice.objects.filter()
+        # sum2=0
+        # for i in inv:
+        #     sum2+=i.grandtotal
+
+        income = accounts1.objects.filter(acctype='Income',cid=cmp1)
         sum2=0
-        for i in inv:
-            sum2+=i.grandtotal
+        for i in income:
+            sum2+=i.balance
+
+        cost = accounts1.objects.filter(acctype='Cost Of Goods Sold',cid=cmp1)
+        sum1=0
+        for i in cost:
+            sum1+=i.balance
+
+        exp = accounts1.objects.filter(acctype='Expenses',cid=cmp1)
+        sum3=0
+        for i in exp:
+            sum3+=i.balance
 
         # ex = expense2.objects.filter().values('account').annotate(t1=Sum('amount'))
-        ex = expense2.objects.all()
-        sum3 = 0
-        for i in ex:
-            sum3+=i.amount
+        # ex = expense2.objects.all()
+        # sum3 = 0
+        # for i in ex:
+        #     sum3+=i.amount
 
         sum4 = sum2-sum1
 
         sumtot=sum4+sum3  
 
-        context={'pur':pur,'sum1':sum1,'inv': inv,'sum2':sum2,'sumtot':sumtot,'ex':ex,'sum3':sum3,'sum4':sum4,'cmp1': cmp1}
+        context={'cost':cost,'sum1':sum1,'income': income,'sum2':sum2,'sumtot':sumtot,'exp':exp,'sum3':sum3,'sum4':sum4,'cmp1': cmp1}
 
         return render(request, 'app1/profitandloss.html', context)
     return redirect('/')   
@@ -31446,6 +31480,25 @@ def createbill(request):
             statment2.payments = billed.grand_total
             statment2.save()
 
+            grand_total = float(request.POST['grand_total'])
+            acc = accounts1.objects.get(
+                name='Accounts Payable(Creditors)', cid=cmp1)
+            if grand_total != 0:
+                if accounts1.objects.get(name='Accounts Payable(Creditors)', cid=cmp1):
+                    acc.balance = acc.balance - grand_total
+                    acc.save()
+                else:
+                    pass
+            else:
+                pass
+            try:
+                if accounts1.objects.get(name='Cost of Goods Sold', cid=cmp1):
+                    acc = accounts1.objects.get(name='Cost of Goods Sold', cid=cmp1)
+                    acc.balance = acc.balance - grand_total
+                    acc.save()
+            except:
+                pass
+
             if sourceofsupply == cmp1.state:
                 cgst = float(request.POST['cgst'])
                 accocgst = accounts1.objects.get(
@@ -31752,7 +31805,8 @@ def addexpenses(request):
         cmp1 = company.objects.get(id=request.session['uid'])
         vndr = vendor.objects.all()
         cust = customer.objects.all()
-        context = {'cmp1': cmp1, 'vndr': vndr, 'cust': cust}
+        acc = accounts1.objects.filter(acctype='Expenses',cid=cmp1)
+        context = {'cmp1': cmp1, 'vndr': vndr, 'cust': cust,'acc':acc}
         return render(request,'app1/addexpense.html',context)
     return redirect('/') 
 
@@ -31766,7 +31820,7 @@ def createexpense(request):
         if request.method == 'POST':
             expense_no= '1000'
             date = request.POST['date']
-            eacc = request.POST['expenseaccount']
+            expenseaccount = request.POST['expenseaccount']
             etyp = request.POST['expensetype']
             hsnsac = request.POST['hsn_sac']
             amount = request.POST['amount']
@@ -31780,7 +31834,7 @@ def createexpense(request):
             reference=request.POST['reference']
             note=request.POST['note']
 
-            exp = purchase_expense(date=date,expenseaccount=eacc,expensetype=etyp,hsn_sac=hsnsac,amount=amount,
+            exp = purchase_expense(date=date,expenseaccount=expenseaccount,expensetype=etyp,hsn_sac=hsnsac,amount=amount,
                             paidthrough=paidthrough,vendor=vendor, sourceofsupply=supply, 
                             customer=customer,tax=tax,reference=reference,note=note)
 
@@ -31790,6 +31844,16 @@ def createexpense(request):
             exp.save()
             exp.expense_no = int(exp.expense_no) + exp.expenseid
             exp.save()
+
+            expenseaccount = request.POST['expenseaccount']
+            amount = float(request.POST['amount'])
+            if accounts1.objects.get(name=expenseaccount,cid=cmp1):
+                print(expenseaccount)
+                acc = accounts1.objects.get(name=expenseaccount,cid=cmp1)
+                acc.balance = float(acc.balance + amount)
+                acc.save()
+            else:
+                pass
 
             exp2=expense2()
             exp2.account = exp.expenseaccount
@@ -32032,7 +32096,7 @@ def createpurchasepymnt(request):
             try:
                 if accounts1.objects.get(name=depositeto,cid=cmp1):
                     print(depositeto)
-                    acconut = accounts1.objects.get(name=depositeto)
+                    acconut = accounts1.objects.get(name=depositeto,cid=cmp1)
                     acconut.balance = acconut.balance + paymentamount
                     acconut.save()
             except:
@@ -32233,7 +32297,6 @@ def itemdata(request):
         toda = date.today()
         tod = toda.strftime("%Y-%m-%d")
         # to = toda.strftime("%d-%m-%Y")
-        context={'tod':tod}
         item = itemtable.objects.get(name=id,cid=cmp1)
         print(item)
         hsn = item.hsn
@@ -32241,7 +32304,7 @@ def itemdata(request):
         price = item.purchase_cost
         gst = item.intra_st
         sgst = item.inter_st
-        return JsonResponse({"status":" not",'hsn':hsn,'qty':qty,'price':price,'gst':gst,'sgst':sgst},context)
+        return JsonResponse({"status":" not",'hsn':hsn,'qty':qty,'price':price,'gst':gst,'sgst':sgst})
     return redirect('/')
 
 def createpurchasedebit(request):

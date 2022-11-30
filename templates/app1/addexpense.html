@@ -31,7 +31,10 @@
                             <div class="d-flex">
                                 <select class="form-control" name="expenseaccount">
                                     <option selected disabled>Choose..</option>
-                                    <option value="Advertising and Marketing">Advertising and Marketing</option>
+                                    {% for a in acc %}
+                                        <option value="{{ a.name }}">{{ a.name }}</option>
+                                    {% endfor %}
+                                    <!-- <option value="Advertising and Marketing">Advertising and Marketing</option>
                                     <option value="Audit Fee">Audit Fee</option>
                                     <option value="Automobile Expense">Automobile Expense</option>
                                     <option value="Bad Debt">Bad Debt</option>
@@ -44,7 +47,7 @@
                                     <option value="IT And Internet charges">IT And Internet charges</option>
                                     <option value="Labour Charges">Labour Charges</option>
                                     <option value="Miscellaneous Expenses">Miscellaneous Expenses</option>
-                                    <option value="Printing And Stationary">Printing And Stationary</option>
+                                    <option value="Printing And Stationary">Printing And Stationary</option> -->
                                 </select>
                                 <a href="#">
                                     <button type="button" class="btn btn-outline-secondary ml-1" 

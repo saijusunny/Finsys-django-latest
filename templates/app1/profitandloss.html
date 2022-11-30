@@ -100,14 +100,24 @@
                                     <tr>
                                         <td style="color: black; padding-left: 30px;"><b>Operating Income</b></td>
                                     </tr>
-                                    <tr class="tr" onclick="window.location='plreport1'">
+                                    {% for i in income %}
+                                        {% if i.balance != 0.0 %}
+                                            <tr>
+                                                <td class="center font-weight-light"
+                                                    style="color: black; width: 85%; padding-left: 90px">{{ i.name }}</td>
+                                                <td class="center font-weight-light"
+                                                    style="color: black;">{{ i.balance }}</td>
+                                            </tr>
+                                        {% endif %}
+                                    {% endfor %}
+                                    <!-- <tr class="tr" onclick="window.location='plreport1'">
                                         <td class="center font-weight-light" style="color: black; width: 85%; padding-left: 60px">
                                             Sales
                                         </td>
                                         <td class="center font-weight-light" style="color: black;">
                                             {{ sum2 }}
                                         </td>
-                                    </tr>
+                                    </tr> -->
                                     <hr>
                                     <tr>
                                         <td style="color: black; padding-left: 30px;" class="border-secondary">
@@ -154,12 +164,22 @@
                                 <tr>
                                     <td style="color: black; padding-left: 30px;"><b>Cost Of Goods Sold</b></td>
                                 </tr>
-                                <tr class="tr" onclick="window.location=' plreport2 '">
+                                {% for i in cost %}
+                                        {% if i.balance != 0.0 %}
+                                            <tr>
+                                                <td class="center font-weight-light"
+                                                    style="color: black; width: 85%; padding-left: 90px">{{ i.name }}</td>
+                                                <td class="center font-weight-light"
+                                                    style="color: black;">{{ i.balance }}</td>
+                                            </tr>
+                                        {% endif %}
+                                    {% endfor %}
+                                <!-- <tr class="tr" onclick="window.location=' plreport2 '">
                                     <td class="center font-weight-light"
                                         style="color: black; width: 85%; padding-left: 90px">Cost Of Goods Sold</td>
                                     <td class="center font-weight-light"
                                         style="color: black;">{{ sum1 }}</td>
-                                </tr>
+                                </tr> -->
                                 <tr>
                                     <td style="color: black; padding-left: 60px; width: 85%;" class="border-secondary">
                                         <b>Total for Cost of Goods Sold</b></td>
@@ -236,7 +256,18 @@
                                     <td class="center font-weight-light font-weight-bold border-secondary"></td>
                                 </tr> -->
 
-                                {% for ex in ex %}
+                                {% for i in exp %}
+                                    {% if i.balance != 0.0 %}
+                                        <tr>
+                                            <td class="center font-weight-light"
+                                                style="color: black; width: 85%; padding-left: 90px">{{ i.name }}</td>
+                                            <td class="center font-weight-light"
+                                                style="color: black;">{{ i.balance }}</td>
+                                        </tr>
+                                    {% endif %}
+                                {% endfor %}
+
+                                <!-- {% for ex in ex %}
                                     <tr class="tr" onclick=window.location='{% url "plreport3" ex.id %}';>
                                     
                                         <td class="center font-weight-light" style="color: black; width: 85%; padding-left: 90px">
@@ -248,7 +279,7 @@
                                         style="color: black;">{{ ex.amount }}</td>
                                         
                                     </tr>
-                                {% endfor %}
+                                {% endfor %} -->
 
                                 <!-- {% for i in account8 %}
                                     {% if i.balance != 0.0 %}
