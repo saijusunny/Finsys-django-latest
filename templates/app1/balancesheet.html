@@ -319,7 +319,7 @@
                                 </tr>
                                 {% for i in account6 %}
                                     {% if i.balance != 0.0 %}
-                                        <tr>
+                                        <tr onclick="window.location='balancesheetreport/{{ account.accounts1id }} ';">
                                             <td class="center font-weight-light"
                                                 style="color: black; width: 85%; padding-left: 90px">{{ i.name }}</td>
                                             <td class="center font-weight-light"

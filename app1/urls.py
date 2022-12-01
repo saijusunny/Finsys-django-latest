@@ -327,6 +327,7 @@ urlpatterns = [
     re_path(r'^profitandloss$', views.profitandloss, name='profitandloss'),
     re_path(r'^profitandlossfilter$', views.profitandlossfiltered, name='profitandlossfilter'),
     re_path(r'^balancesheet$', views.balancesheet, name='balancesheet'),
+    re_path(r'^balancesheetreport/(?P<accounts1id>\d+)$', views.balancesheetreport, name='balancesheetreport'),
     re_path(r'^balancesheetfilter$', views.balancesheetfiltered, name='balancesheetfilter'),
     re_path(r'^accreceivables$', views.accreceivables, name='accreceivables'),
     re_path(r'^accreceivables1$', views.accreceivables1, name='accreceivables1'),

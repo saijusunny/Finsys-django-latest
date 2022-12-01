@@ -13299,7 +13299,6 @@ def balancesheetfiltered(request):
     except:
         return redirect('balancesheet')
 
-
 @login_required(login_url='regcomp')
 def balancesheet(request):
     try:
@@ -13626,6 +13625,74 @@ def balancesheet(request):
         return render(request, 'app1/balancesheet.html', context)
     except:
         return redirect('godash')
+
+
+@login_required(login_url='regcomp')
+def balancesheetreport(request, accounts1id):
+    try:
+        cmp1 = company.objects.get(id=request.session['uid'])
+        account = accounts1.objects.get(accounts1id=accounts1id, cid=cmp1)
+        bal = account.balance
+        context = {'cmp1': cmp1, 'account': account, 'accbal': bal}
+        if account.name == 'Account Receivable(Debtors)':
+            invoic = invoice.objects.filter(cid=cmp1)
+            creditnote = credit.objects.filter(cid=cmp1)
+            paymen = payment.objects.filter(cid=cmp1)
+            salesofline = salesrecpts.objects.filter(cid=cmp1)
+            context = {'cmp1': cmp1, 'invoic': invoic, 'creditnote': creditnote, 'salesoffline': salesofline,
+                       'payment': paymen, 'account': account,
+                       'accbal': bal}
+        elif account.name == 'Accounts Payable(Creditors)':
+            bills = vendor_statment.objects.filter(cid=cmp1)
+            bill = bills.objects.filter(cid=cmp1, payornot='openbalance')
+            bill2 = bills.objects.filter(cid=cmp1, payornot='')
+            bill3 = bills.objects.filter(cid=cmp1, payornot='debit')
+            debit = suplrcredit.objects.filter(cid=cmp1)
+            expence = expences.objects.filter(cid=cmp1)
+            context = {'cmp1': cmp1, 'bills':bills , 'bill': bill, 'bill2': bill2, 'billdebit': bill3, 'debit': debit,
+                       'expence': expence,
+                       'account': account,
+                       'accbal': bal}
+        elif account.name == 'Input CGST':
+            deb = suplrcredit.objects.filter(cid=cmp1)
+            debit = []
+            for i in deb:
+                name = i.supplier
+                x = name.split()
+                if len(x) == 3:
+                    firstname = x[0]
+                    lastname = x[1] + ' ' + x[2]
+                    supp = supplier.objects.get(
+                        firstname=firstname, lastname=lastname, cid=cmp1)
+                else:
+                    supp = supplier.objects.get(
+                        firstname=x[0], lastname=x[1], cid=cmp1)
+                if supp.state == cmp1.state:
+                    debit.append(
+                        [i.paymdate, i.refno, i.supplier, float(i.taxamount) / 2])
+            expen = expences.objects.filter(cid=cmp1)
+            expence = []
+            for i in expen:
+                name = i.payee
+                x = name.split()
+                if len(x) == 3:
+                    firstname = x[0]
+                    lastname = x[1] + ' ' + x[2]
+                    supp = supplier.objects.get(
+                        firstname=firstname, lastname=lastname, cid=cmp1)
+                else:
+                    supp = supplier.objects.get(
+                        firstname=x[0], lastname=x[1], cid=cmp1)
+                if supp.state == cmp1.state:
+                    expence.append([i.paymdate, i.refno, (i.payee).replace(
+                        u'\xa0', u''), float(i.taxamount) / 2])
+            context = {'cmp1': cmp1, 'debit1': debit,
+                       'expence1': expence, 'account': account, 'accbal': bal}
+        else:
+            pass
+        return render(request, 'app1/balancesheetreport.html', context)
+    except:
+        pass
 
 
 def profitandloss(request):
