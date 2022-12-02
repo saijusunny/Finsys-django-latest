@@ -166,7 +166,7 @@ body{
                                 <th style="text-align: center;">Date</th>
                                 <th style="text-align: center;">ACCOUNT</th>
                                 <th style="text-align: center;">TRANSACTION DETAILS</th>
-                                <th style="text-align: center;">TRANSACTION DETAILS</th>
+                                <th style="text-align: center;">TRANSACTION TYPE</th>
                                 <th style="text-align: center;">TRANSACTION#</th>
                                 <th style="text-align: center;">REFERENCE#</th>
                                 <th style="text-align: center;">DEBIT</th>
@@ -204,106 +204,92 @@ body{
                                         <td style="text-align: center;"></td>
                                         
                                     </tr>
-                                    {% for i in statment %}
+                                    {% for i in acc %}
                                     {% if i.cid_id == cmp1.cid %}
                                     <tr >
-                                        <td style="text-align: center;"> {{i.Date | date:'d-m-Y'}} </td>
-                                        <td style="text-align: center;">Accounts Receivable</td>
-                                        <td style="text-align: center;"> {{i.customer}}</td>
-                                        
+                                        <td style="text-align: center;">{{ i.date | date:'d-m-Y' }}</td>
+                                        <td style="text-align: center;">{{ i.accname }}</td>
                                         <td style="text-align: center;">
-                                            {% if i.Transactions == "Payment Received"  %}
-                                            Customer Payment
-                                            {% else %}
-                                            {{i.Transactions}}
+                                            {% if i.transactions == "Expense"  %}
+                                                {{ i.details0 }}
+                                            {% elif i.transactions == "Billed"  %}
+                                                {{ i.details }}
+                                            {% elif i.transactions == "Vendor Credits"  %}
+                                                {{ i.details }}
+                                            {% elif i.transactions == "Invoice"  %}
+                                                {{ i.details }}
                                             {% endif %}
                                         </td>
-                                        <td style="text-align: center;"> </td>
-                                        <td style="text-align: center;"></td>
                                         <td style="text-align: center;">
-                                            {% if i.Transactions == "Customer Opening Balance" %}
-
-                                            {% if i.Amount %}
-                                            {{i.Amount}} 
-                                            
-                                           
+                                            {% if i.transactions == "Expense"  %}
+                                                Expense
+                                            {% elif i.transactions == "Billed"  %}
+                                                Bill
+                                            {% elif i.transactions == "Invoice"  %}
+                                                Invoice
                                             {% endif %}
-                                            {% else %}
-                                            {% if i.Amount %}
-                                           
-                                            <a href="{% url 'invoice_view' i.inv.invoiceid   %}">{{i.Amount}} </a>
-                                            
-                                            
-                                            {% endif %}
-
-                                            {% endif %}
-
                                         </td>
                                         <td style="text-align: center;">
-                                            {% if i.Payments %}
-                                            <a href="{% url 'payment_view' i.pay.paymentid   %}">{{i.Payments}} </a>
-                                            
-
-                                            {% endif %}</td>
-
-
-                                        <td style="text-align: center;">
-                                            {% if i.Transactions == "Invoice"  %}
-
-                                            <a href="{% url 'invoice_view' i.inv.invoiceid   %}">{{i.Amount}} Dr </a>
+                                            {% if i.transactions == "Expense" %}
+                                                {{ i.details1 }}
+                                            {% elif i.transactions == "Billed" %}
+                                                {{ i.details1 }}
+                                            {% elif i.transactions == "Vendor Credits" %}
+                                                DN - {{ i.details1 }}
+                                            {% elif i.transactions == "Invoice"  %}
+                                                {{ i.details1 }}
                                             {% endif %}
-                                            {% if i.Transactions == "Payment Received"  %}
-                                            <a href="{% url 'payment_view' i.pay.paymentid   %}">{{i.Payments}}  Cr </a>
-                                            
-                                            {% endif %}
-
-                                            {% if i.Transactions == "Customer Opening Balance" %}
-
-                                            {% if i.Amount %}
-                                            {{i.Amount}} Dr
-                                            
-                                           
-                                            {% endif %}
-                                            {% endif %}
-
-                                        
                                         </td>
-                                        
+                                        <td style="text-align: center;">{{ i.details2 }}</td>
+                                        <td style="text-align: center;">
+                                            {% if i.transactions == "Expense" %}
+                                                {{ i.payments }}
+                                            {% elif i.transactions == "Billed" %}
+                                                {{ i.payments }}
+                                            {% elif i.transactions == "Invoice"  %}
+                                                {{ i.payments }}
+                                            {% endif %}
+                                        </td>
+                                        <td style="text-align: center;">
+                                            {% if i.transactions == "Vendor Credits" %}
+                                                {{ i.payments }}
+                                            {% endif %}
+                                        </td>
+                                        <td style="text-align: center;">
+                                            {% if i.transactions == "Expense"  %}
+                                                {{i.payments}} Dr
+                                            {% elif i.transactions == "Billed"  %}
+                                                {{i.payments}} Dr
+                                            {% elif i.transactions == "Vendor Credits"  %}
+                                                {{i.payments}} Cr
+                                            {% elif i.transactions == "Invoice"  %}
+                                                {{i.payments}} Dr
+                                            {% endif %}
+                                        </td>    
                                     </tr>
-                                    
-
-
                                 {% endif %}
                             {% endfor %}
 
                             {% if value != "" %}
-                            <tr  >
-                                <td style="text-align: center;"> </td>
-                                <td colspan="2" style="text-align: center;">Total Debits and Credits 
-
-                                    {% if fdate != "" %}
-
-                                    ( {{fdate}}  - {{ldate}} ) 
-                                            {% else %}
-
-                                            
+                                <tr>
+                                    <td style="text-align: center;"> </td>
+                                    <td colspan="2" style="text-align: center;">Total Debits and Credits 
+                                        {% if fdate != "" %}
+                                            ( {{fdate}}  - {{ldate}} ) 
+                                        {% else %}
                                             ( 01-04-{% now 'Y' %} - {{to}} ) 
-
-                                            {% endif %}
-                                    
-                                </td>
-                                
-                                <td style="text-align: center;"></td>
-                                <td style="text-align: center;"></td>
-                                <td style="text-align: center;"></td>
-                                <td style="text-align: center;">₹{{total1}}</td>
-                                <td style="text-align: center;">₹{{credit}}</td>
-                                <td style="text-align: center;"></td>
-                                
-                            </tr>
+                                        {% endif %}    
+                                    </td>
+                                    <td style="text-align: center;"></td>
+                                    <td style="text-align: center;"></td>
+                                    <td style="text-align: center;"></td>
+                                    <td style="text-align: center;">₹{{ debit }}</td>
+                                    <td style="text-align: center;">₹{{ credit }}</td>
+                                    <td style="text-align: center;"></td>    
+                                </tr>
                             {% endif %}
                             
-                            <tr >
+                            <tr>
                                 <td style="text-align: center;"> As On 
                                     {% if ldate != "" %}
 
@@ -321,7 +307,7 @@ body{
                                 <td style="text-align: center;"></td>
                                 <td style="text-align: center;"> </td>
                                 <td style="text-align: center;"></td>
-                                <td style="text-align: center;">₹{{total1}}</td>
+                                <td style="text-align: center;">₹{{total2}}</td>
                                 <td style="text-align: center;"></td>
                                 <td style="text-align: center;"></td>
                                 

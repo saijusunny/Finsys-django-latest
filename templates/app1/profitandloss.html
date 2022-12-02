@@ -100,16 +100,16 @@
                                     <tr>
                                         <td style="color: black; padding-left: 30px;"><b>Operating Income</b></td>
                                     </tr>
-                                    {% for i in income %}
-                                        {% if i.balance != 0.0 %}
-                                            <tr>
-                                                <td class="center font-weight-light"
-                                                    style="color: black; width: 85%; padding-left: 90px">{{ i.name }}</td>
-                                                <td class="center font-weight-light"
-                                                    style="color: black;">{{ i.balance }}</td>
-                                            </tr>
-                                        {% endif %}
-                                    {% endfor %}
+                                    {% for i in inv %}
+                                    {% if i.payments != 0.0 %}
+                                        <tr class="tr" onclick="window.location='plreport11/{{ i.accname }} ';">
+                                            <td class="center font-weight-light"
+                                                style="color: black; width: 85%; padding-left: 90px">{{ i.accname }}</td>
+                                            <td class="center font-weight-light"
+                                                style="color: black;">{{ i.t1 }}</td>
+                                        </tr>
+                                    {% endif %}
+                                {% endfor %}
                                     <!-- <tr class="tr" onclick="window.location='plreport1'">
                                         <td class="center font-weight-light" style="color: black; width: 85%; padding-left: 60px">
                                             Sales
@@ -123,7 +123,7 @@
                                         <td style="color: black; padding-left: 30px;" class="border-secondary">
                                             <b>Total for Operating Income</b>
                                         </td>
-                                        <td style="color: black;" class="border-secondary"><b>{{ sum2 }}</b></td>
+                                        <td style="color: black;" class="border-secondary"><b>{{ sum1 }}</b></td>
                                     </tr>
                                     <!-- <tr> 
                                         <th style="color: black; padding-left: 30px;">sales</th>
@@ -164,16 +164,17 @@
                                 <tr>
                                     <td style="color: black; padding-left: 30px;"><b>Cost Of Goods Sold</b></td>
                                 </tr>
-                                {% for i in cost %}
-                                        {% if i.balance != 0.0 %}
-                                            <tr>
-                                                <td class="center font-weight-light"
-                                                    style="color: black; width: 85%; padding-left: 90px">{{ i.name }}</td>
-                                                <td class="center font-weight-light"
-                                                    style="color: black;">{{ i.balance }}</td>
-                                            </tr>
-                                        {% endif %}
-                                    {% endfor %}
+                                {% for i in pbl %}
+                                    {% if i.payments != 0.0 %}
+                                        <tr class="tr" onclick="window.location='plreport11/{{ i.accname }} ';">
+                                            <td class="center font-weight-light"
+                                                style="color: black; width: 85%; padding-left: 90px">{{ i.accname }}</td>
+                                            <td class="center font-weight-light"
+                                                style="color: black;">{{ i.t1 }}</td>
+                                        </tr>
+                                    {% endif %}
+                                {% endfor %}
+
                                 <!-- <tr class="tr" onclick="window.location=' plreport2 '">
                                     <td class="center font-weight-light"
                                         style="color: black; width: 85%; padding-left: 90px">Cost Of Goods Sold</td>
@@ -184,7 +185,7 @@
                                     <td style="color: black; padding-left: 60px; width: 85%;" class="border-secondary">
                                         <b>Total for Cost of Goods Sold</b></td>
                                     <td style="color: black;"
-                                        class="center font-weight-light font-weight-bold border-secondary">{{ sum1 }}</td>
+                                        class="center font-weight-light font-weight-bold border-secondary">{{ sum2 }}</td>
                                 </tr>
 
 
@@ -257,12 +258,12 @@
                                 </tr> -->
 
                                 {% for i in exp %}
-                                    {% if i.balance != 0.0 %}
-                                        <tr>
+                                    {% if i.payments != 0.0 %}
+                                        <tr class="tr" onclick="window.location='plreport11/{{ i.accname }} ';">
                                             <td class="center font-weight-light"
-                                                style="color: black; width: 85%; padding-left: 90px">{{ i.name }}</td>
+                                                style="color: black; width: 85%; padding-left: 90px">{{ i.accname }}</td>
                                             <td class="center font-weight-light"
-                                                style="color: black;">{{ i.balance }}</td>
+                                                style="color: black;">{{ i.t1 }}</td>
                                         </tr>
                                     {% endif %}
                                 {% endfor %}

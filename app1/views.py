@@ -118,27 +118,13 @@ def register(request, id):
             accountsecond = [
                 ['Account Receivable(Debtors)', 'Account Receivable(Debtors)',
                  'Account Receivable(Debtors)'],
-                ['Current Assets', 'Deferred Service Tax Input Credit', 'Deferred CGST'],
-                ['Current Assets', 'Deferred Service Tax Input Credit',
-                    'Deferred GST Input Credit'],
-                ['Current Assets', 'Deferred Service Tax Input Credit', 'Deferred IGST'],
-                ['Current Assets', 'Deferred Service Tax Input Credit',
-                    'Deferred Krishi Kalyan Cess Input Credit'],
                 ['Current Assets', 'Prepaid Expenses', 'Prepaid Expenses'],
-                ['Current Assets', 'Deferred Service Tax Input Credit',
-                    'Deferred Service Tax Input Credit'],
-                ['Current Assets', 'Deferred Service Tax Input Credit', 'Deferred SGST'],
-                ['Current Assets', 'Deferred Service Tax Input Credit',
-                    'Deferred VAT Input Credit'],
                 ['Current Assets', 'Service Tax Refund', 'GST Refund'],
                 ['Current Assets', 'Inventory', 'Inventory Asset'],
-                ['Current Assets', 'Service Tax Refund',
-                    'Krishi Kalyan Cess Refund'],
                 ['Current Assets', 'Prepaid Expenses', 'Prepaid Insurance'],
                 ['Current Assets', 'Service Tax Refund', 'Service Tax Refund'],
                 ['Current Assets', 'Other Current Assets', 'TDS Receivable'],
                 ['Current Assets', 'Other Current Assets', 'Uncategorised Asset'],
-                ['Current Assets', 'Undeposited Fund', 'Undeposited Fund'],
                 ['Fixed Assets', 'Accumulated Depreciation',
                     'Accumulated Depreciation'],
                 ['Fixed Assets', 'Buildings', 'Buildings and Improvements'],
@@ -174,10 +160,6 @@ def register(request, id):
                 ['Current Liabilities', 'Sales and Service Tax Payable', 'Input VAT 14%'],
                 ['Current Liabilities', 'Sales and Service Tax Payable', 'Input VAT 4%'],
                 ['Current Liabilities', 'Sales and Service Tax Payable', 'Input VAT 5%'],
-                ['Current Liabilities', 'Sales and Service Tax Payable',
-                    'Krishi Kalyan Cess Payable'],
-                ['Current Liabilities', 'Tax Suspense',
-                    'Krishi Kalyan Cess Suspense'],
                 ['Current Liabilities', 'Sales and Service Tax Payable', 'Output CGST'],
                 ['Current Liabilities', 'Sales and Service Tax Payable',
                     'Output CGST Tax RCM'],
@@ -203,15 +185,13 @@ def register(request, id):
                     'Service Tax Payable'],
                 ['Current Liabilities', 'Tax Suspense', 'Service Tax Suspense'],
                 ['Current Liabilities', 'Sales and Service Tax Payable', 'SGST Payable'],
-                ['Current Liabilities', 'Sales and Service Tax Payable',
-                    'Swachh Barath Cess Payable'],
-                ['Current Liabilities', 'Tax Suspense',
-                    'Swachh Barath Cess Suspense'],
                 ['Current Liabilities', 'Current Liabilities', 'TDS Payable'],
                 ['Current Liabilities', 'Sales and Service Tax Payable', 'VAT Payable'],
                 ['Current Liabilities', 'Tax Suspense', 'VAT Suspense'],
                 ['Equity', 'Opening Balance Equity', 'Opening Balance Equity'],
                 ['Equity', 'Retained Earnings', 'Retained Earnings'],
+                ['Cash', 'Cash', 'Petty Cash'],
+                ['Cash', 'Cash', 'Undeposited Funds'],
                 ['Income', 'Service/Fee Income', 'Billable Expense Income'],
                 ['Income', 'Service/Fee Income', 'Consulting Income'],
                 ['Income', 'Sales of Product Income', 'Product Sales'], [
@@ -226,6 +206,7 @@ def register(request, id):
                 ['Income', 'Unapplied Cash Payment Income',
                     'Unapplied Cash Payment Income'],
                 ['Income', 'Service/Fee Income', 'Uncategorised Income'],
+                ['Cost of Goods Sold', 'Cost of Goods Sold', 'Cost of Goods Sold'],
                 ['Cost of Goods Sold', 'Suppliers and Materials-COS', 'Cost of Sales'],
                 ['Cost of Goods Sold', 'Cost of Goods Sold',
                     'Equipment Rental for Jobs'],
@@ -299,15 +280,10 @@ def register(request, id):
                 ['Other Income', 'Other Miscellaneous Income',
                     'Shipping and Delivery Income'],
                 ['Other Expenses', 'Other Expenses', 'Ask My Accountant'],
-                ['Other Expenses', 'Other Expenses', 'CGST Write-Off'],
-                ['Other Expense', 'Other Expense', 'GST Write-Off'],
-                ['Other Expenses', 'Other Expenses', 'IGST Write-Off'],
                 ['Other Expenses', 'Other Expenses', 'Miscellaneous Expense'],
                 ['Other Expenses', 'Other Expenses', 'Political Contributions'],
                 ['Other Expenses', 'Other Expenses',
                     'Reconciliation Discrepancies'],
-                ['Other Expenses', 'Other Expenses', 'SGST Write-Off'],
-                ['Other Expenses', 'Other Expenses', 'Tax Write-Off'],
                 ['Other Expenses', 'Other Expenses', 'Vehicle Expenses']]
 
             accounype = [['Deferred CGST'], ['Deferred GST Input Credit'], ['Deferred IGST'],
@@ -3387,6 +3363,17 @@ def invcreate2(request):
         inv2.invoiceno = int(inv2.invoiceno) + inv2.invoiceid
         inv2.save()
 
+        pl3=profit_loss()
+        pl3.details = inv2.customername
+        pl3.cid = cmp1
+        pl3.transactions = "Invoice"
+        pl3.accname = "Sales"
+        pl3.inv = inv2
+        pl3.details1 = inv2.invoiceno
+        pl3.date = inv2.invoicedate
+        pl3.payments = inv2.grandtotal
+        pl3.save()
+
         grandtotal = float(request.POST['grandtotal'])
         acc = accounts1.objects.get(
             name='Account Receivable(Debtors)', cid=cmp1)
@@ -3431,7 +3418,6 @@ def invcreate2(request):
         #     name='TDS Payable',cid=cmp1)
         # accont.balance = accont.balance - tcs_amount
         # accont.save()
-
 
         product = request.POST.getlist("product[]")
         hsn  = request.POST.getlist("hsn[]")
@@ -13713,20 +13699,46 @@ def profitandloss(request):
         # for i in inv:
         #     sum2+=i.grandtotal
 
-        income = accounts1.objects.filter(acctype='Income',cid=cmp1)
-        sum2=0
-        for i in income:
-            sum2+=i.balance
+        # income = accounts1.objects.filter(acctype='Income',cid=cmp1)
+        # sum2=0
+        # for i in income:
+        #     sum2+=i.balance
 
-        cost = accounts1.objects.filter(acctype='Cost Of Goods Sold',cid=cmp1)
+        # cost = accounts1.objects.filter(acctype='Cost Of Goods Sold',cid=cmp1)
+        # sum1=0
+        # for i in cost:
+        #     sum1+=i.balance
+
+        pbl = profit_loss.objects.filter(cid=cmp1,accname='Cost of Goods Sold').values('accname').annotate(t1=Sum('payments'))
+
+        inv = profit_loss.objects.filter(cid=cmp1,transactions='Invoice').values('accname').annotate(t1=Sum('payments'))
+
+        exp = profit_loss.objects.filter(cid=cmp1,transactions='Expense').values('accname').annotate(t1=Sum('payments'))
+
+        acc = profit_loss.objects.filter(cid=cmp1)
         sum1=0
-        for i in cost:
-            sum1+=i.balance
-
-        exp = accounts1.objects.filter(acctype='Expenses',cid=cmp1)
+        sum2=0
         sum3=0
-        for i in exp:
-            sum3+=i.balance
+        sum4=0
+        sumtot = 0
+
+        for i in acc :
+            if i.transactions =="Invoice":
+                sum1+=i.payments
+
+            if i.accname =="Cost of Goods Sold":
+                sum2+=i.payments
+
+            if i.transactions =="Expense":
+                sum3+=i.payments
+
+        sum4 = sum1-sum2
+
+
+        # exp = profit_loss.objects.filter(transactions='Expense',cid=cmp1)
+        # sum3=0
+        # for i in exp:
+        #     sum3+=i.payments
 
         # ex = expense2.objects.filter().values('account').annotate(t1=Sum('amount'))
         # ex = expense2.objects.all()
@@ -13734,11 +13746,9 @@ def profitandloss(request):
         # for i in ex:
         #     sum3+=i.amount
 
-        sum4 = sum2-sum1
+        sumtot=sum4-sum3  
 
-        sumtot=sum4+sum3  
-
-        context={'cost':cost,'sum1':sum1,'income': income,'sum2':sum2,'sumtot':sumtot,'exp':exp,'sum3':sum3,'sum4':sum4,'cmp1': cmp1}
+        context={'pbl':pbl,'inv':inv,'sum1':sum1,'sum2':sum2,'sum3':sum3,'sumtot':sumtot,'exp':exp,'sum4':sum4,'cmp1': cmp1}
 
         return render(request, 'app1/profitandloss.html', context)
     return redirect('/')   
@@ -13752,6 +13762,46 @@ def plreport1(request):
         cmp1 = company.objects.get(id=request.session['uid'])
         statment = cust_statment.objects.all()
         context = {'statment':statment,'cmp1':cmp1}
+        return render(request, 'app1/plreport1.html', context)
+    return redirect('/')  
+
+def plreport11(request,id):
+    if 'uid' in request.session:
+        if request.session.has_key('uid'):
+            uid = request.session['uid']
+        else:
+            return redirect('/')
+        cmp1 = company.objects.get(id=request.session['uid'])
+
+        toda = date.today()
+        tod = toda.strftime("%Y-%m-%d")
+
+        to=toda.strftime("%d-%m-%Y")
+
+        acc = profit_loss.objects.filter(accname=id,cid=cmp1)
+
+        debit=0
+        credit=0
+        total2 =0
+
+        for i in acc :
+            if i.transactions =="Billed":
+                debit+=i.payments
+
+            if i.transactions =="Vendor Credits":
+                credit+=i.payments
+
+            if i.transactions =="Expense":
+                debit+=i.payments
+
+            if i.transactions =="Invoice":
+                debit+=i.payments
+
+        fdate =""
+        ldate =""
+
+        total2 = credit-debit
+        context = {'acc':acc, 'cmp1':cmp1, 'to':to, 'fdate':fdate, 'ldate':ldate, 'debit':debit, 'credit':credit, 'total2':total2}
         return render(request, 'app1/plreport1.html', context)
     return redirect('/')  
 
@@ -31547,6 +31597,18 @@ def createbill(request):
             statment2.payments = billed.grand_total
             statment2.save()
 
+            pl3=profit_loss()
+            pl3.details = billed.vendor_name
+            pl3.cid = cmp1
+            pl3.transactions = "Billed"
+            pl3.accname = "Cost of Goods Sold"
+            pl3.pbill = billed
+            pl3.details1 = billed.bill_no
+            pl3.details2 = reference
+            pl3.date = billed.date
+            pl3.payments = billed.grand_total
+            pl3.save()
+
             grand_total = float(request.POST['grand_total'])
             acc = accounts1.objects.get(
                 name='Accounts Payable(Creditors)', cid=cmp1)
@@ -31872,7 +31934,7 @@ def addexpenses(request):
         cmp1 = company.objects.get(id=request.session['uid'])
         vndr = vendor.objects.all()
         cust = customer.objects.all()
-        acc = accounts1.objects.filter(acctype='Expenses',cid=cmp1)
+        acc = accounts1.objects.filter(cid=cmp1)
         context = {'cmp1': cmp1, 'vndr': vndr, 'cust': cust,'acc':acc}
         return render(request,'app1/addexpense.html',context)
     return redirect('/') 
@@ -31912,6 +31974,16 @@ def createexpense(request):
             exp.expense_no = int(exp.expense_no) + exp.expenseid
             exp.save()
 
+            paidthrough = request.POST['paidthrough']
+            amount = float(request.POST['amount'])
+            if accounts1.objects.get(name=paidthrough,cid=cmp1):
+                print(paidthrough)
+                acc = accounts1.objects.get(name=paidthrough,cid=cmp1)
+                acc.balance = float(acc.balance + amount)
+                acc.save()
+            else:
+                pass
+
             expenseaccount = request.POST['expenseaccount']
             amount = float(request.POST['amount'])
             if accounts1.objects.get(name=expenseaccount,cid=cmp1):
@@ -31926,6 +31998,19 @@ def createexpense(request):
             exp2.account = exp.expenseaccount
             exp2.amount = exp.amount
             exp2.save()
+
+            pl3=profit_loss()
+            pl3.details = exp.vendor
+            pl3.cid = cmp1
+            pl3.transactions = "Expense"
+            pl3.accname = exp.expenseaccount
+            pl3.expnc = exp
+            pl3.details0 = exp.paidthrough
+            pl3.details1 = exp.expense_no
+            pl3.details2 = reference
+            pl3.date = exp.date
+            pl3.payments = exp.amount
+            pl3.save()
 
             return redirect('goexpenses')
         return render(request,'app1/goexpenses.html',{'cmp1': cmp1})
@@ -32005,6 +32090,19 @@ def editexpense(request,id):
                     os.remove(expnce.file.path)    
                 expnce.file = request.FILES['file']
             expnce.save()
+
+            pl3=profit_loss.objects.get(cid=cmp1,expnc=expnce)
+            pl3.details = expnce.vendor
+            pl3.cid = cmp1
+            pl3.transactions = "Expense"
+            pl3.accname = expnce.expenseaccount
+            pl3.expnc = expnce
+            pl3.details0 = expnce.paidthrough
+            pl3.details1 = expnce.expense_no
+            pl3.details2 = expnce.reference
+            pl3.date = expnce.date
+            pl3.payments = expnce.amount
+            pl3.save()
 
             return redirect('goexpenses')
         return render(request,'app1/goexpenses.html',{'cmp1': cmp1})
@@ -32397,6 +32495,36 @@ def createpurchasedebit(request):
             pdebit.save()
             pdebit.debit_no = int(pdebit.debit_no) + pdebit.pdebitid
             pdebit.save()
+
+            pl3=profit_loss()
+            pl3.details = pdebit.vendor
+            pl3.cid = cmp1
+            pl3.transactions = "Vendor Credits"
+            pl3.accname = "Cost of Goods Sold"
+            pl3.pdebit = pdebit
+            pl3.details1 = pdebit.debit_no
+            pl3.date = pdebit.debitdate
+            pl3.payments = pdebit.grandtotal
+            pl3.save()
+
+            grandtotal = float(request.POST['grandtotal'])
+            acc = accounts1.objects.get(
+                name='Accounts Payable(Creditors)', cid=cmp1)
+            if grandtotal != 0:
+                if accounts1.objects.get(name='Accounts Payable(Creditors)', cid=cmp1):
+                    acc.balance = acc.balance - grandtotal
+                    acc.save()
+                else:
+                    pass
+            else:
+                pass
+            try:
+                if accounts1.objects.get(name='Cost of Goods Sold', cid=cmp1):
+                    acc = accounts1.objects.get(name='Cost of Goods Sold', cid=cmp1)
+                    acc.balance = acc.balance - grandtotal
+                    acc.save()
+            except:
+                pass
 
 
             items = request.POST.getlist("items[]")

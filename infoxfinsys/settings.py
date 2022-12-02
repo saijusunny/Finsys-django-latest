@@ -47,8 +47,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'app1',
-    'django_social_share',
-    'multiforloop'
+    'django_social_share'
 ]
 
 MIDDLEWARE = [
@@ -88,7 +87,7 @@ WSGI_APPLICATION = 'infoxfinsys.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'finsys1',
+        'NAME': 'fsss',
         'USER': 'root',
         'PASSWORD': '',
         'HOST': 'localhost',

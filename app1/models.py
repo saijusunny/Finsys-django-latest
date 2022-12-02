@@ -1532,6 +1532,23 @@ class vendor_statment(models.Model):
     balance	= models.FloatField(blank=True,null=True)
     payments=models.FloatField(blank=True,null=True)	
 
+class profit_loss(models.Model):
+    cid = models.ForeignKey(company, on_delete=models.CASCADE,null=True)
+    pbill = models.ForeignKey(purchasebill,on_delete=models.CASCADE,blank=True,null=True)
+    inv = models.ForeignKey(invoice,on_delete=models.CASCADE,blank=True,null=True)
+    expnc = models.ForeignKey(purchase_expense,on_delete=models.CASCADE,blank=True,null=True)
+    pdebit = models.ForeignKey(purchasedebit,on_delete=models.CASCADE,blank=True,null=True)
+    details = models.CharField(max_length=255, null=True)
+    transactions = models.CharField(max_length=255, null=True)
+    accname = models.CharField(max_length=255, null=True)
+    date = models.DateField(blank=True,null=True)
+    details0 = models.CharField(max_length=255, null=True)
+    details1 = models.CharField(max_length=255,blank=True,null=True)
+    details2= models.CharField(max_length=255,blank=True,default='')
+    amount = models.FloatField(blank=True,null=True)
+    balance	= models.FloatField(blank=True,null=True)
+    payments=models.IntegerField(blank=True,null=True)	
+
 class item_stock(models.Model):
     item = models.CharField(max_length=255, default='')
     qtyin = models.IntegerField(blank=True,null=True)

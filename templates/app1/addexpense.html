@@ -81,10 +81,24 @@
                         <div class="col-md-3 mt-3">
                             <label for="">Paid Through</label>
                             <select class="form-control" name="paidthrough">
-                                <option value="Bank">Bank</option>
                                 <option disabled>Cash</option>
-                                <option value="Petty Cash" selected>Petty Cash</option>
-                                <option value="Undeposited Founds">Undeposited Founds</option>
+                                {% for a in acc %}
+                                    {% if a.acctype == "Cash" %}
+                                        <option value="{{ a.name }}">{{ a.name }}</option>
+                                    {% endif %} 
+                                {% endfor %}  
+                                <!-- <option disabled>Bank</option>
+                                {% for a in acc %}
+                                    {% if a.acctype == "Bank" %}
+                                        <option value="{{ a.name }}">{{ a.name }}</option>
+                                    {% endif %} 
+                                {% endfor %}  
+                                <option disabled>Fixed Assets</option>
+                                {% for a in acc %}
+                                    {% if a.acctype == "Fixed Assets" %}
+                                        <option value="{{ a.name }}">{{ a.name }}</option>
+                                    {% endif %} 
+                                {% endfor %} -->
                             </select>
                         </div>
                         <div class="col-md-3 mt-3">

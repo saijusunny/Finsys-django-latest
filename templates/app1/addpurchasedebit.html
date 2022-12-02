@@ -54,9 +54,13 @@
             $('.taxamount').each(function () {
                 taxamount += parseFloat($(this).val());
             });
+            
+            gt =taxamount + total
+            let x =Math.round(gt)
+            let y =Math.round(taxamount)
             $('#sub_total').val(total.toFixed(2));
-            $('#tax_amount').val(taxamount.toFixed(2));
-            $('#grandtotal').val((taxamount + total).toFixed(2));
+            $('#tax_amount').val(parseFloat(y.toFixed(2)));
+            $('#grandtotal').val(parseFloat(x.toFixed(2)));
             $('#baldue').val((taxamount + total).toFixed(2));
 
             test()
