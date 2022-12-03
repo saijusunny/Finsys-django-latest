@@ -327,7 +327,6 @@ urlpatterns = [
     re_path(r'^profitandloss$', views.profitandloss, name='profitandloss'),
     re_path(r'^profitandlossfilter$', views.profitandlossfiltered, name='profitandlossfilter'),
     re_path(r'^balancesheet$', views.balancesheet, name='balancesheet'),
-    re_path(r'^balancesheetreport/(?P<accounts1id>\d+)$', views.balancesheetreport, name='balancesheetreport'),
     re_path(r'^balancesheetfilter$', views.balancesheetfiltered, name='balancesheetfilter'),
     re_path(r'^accreceivables$', views.accreceivables, name='accreceivables'),
     re_path(r'^accreceivables1$', views.accreceivables1, name='accreceivables1'),
@@ -747,10 +746,10 @@ urlpatterns = [
     path('plreport2', views.plreport2, name='plreport2'),
     path('plreport3/<int:id>', views.plreport3, name='plreport3'),
     path('plreport11/<str:id>', views.plreport11, name='plreport11'),
+    path('bsreport/<str:id>', views.bsreport, name='bsreport'),
     # path('plreport/<str:id>', views.plreport, name='plreport'),
 
     re_path(r'^demo$', views.demo, name='demo'),
-
     re_path(r'^itemdata$', views.itemdata, name='itemdata'),
     re_path(r'^payment_method$', views.payment_method, name='payment_method'),
 

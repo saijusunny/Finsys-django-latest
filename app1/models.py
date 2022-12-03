@@ -1507,6 +1507,9 @@ class purchasedebit(models.Model):
     supply = models.CharField(max_length=150,null=True)
     billno = models.CharField(max_length=100,null=True)
     subtotal = models.CharField(max_length=100,null=True)
+    sgst = models.CharField(max_length=100,null=True)
+    cgst = models.CharField(max_length=100,null=True)
+    igst = models.CharField(max_length=100,null=True)
     taxamount = models.CharField(max_length=100,null=True)
     grandtotal = models.CharField(max_length=100,null=True)
 
@@ -1548,6 +1551,21 @@ class profit_loss(models.Model):
     amount = models.FloatField(blank=True,null=True)
     balance	= models.FloatField(blank=True,null=True)
     payments=models.IntegerField(blank=True,null=True)	
+
+class balance_sheet(models.Model):
+    cid = models.ForeignKey(company, on_delete=models.CASCADE,null=True)
+    bill = models.ForeignKey(purchasebill,on_delete=models.CASCADE,blank=True,null=True)
+    invc = models.ForeignKey(invoice,on_delete=models.CASCADE,blank=True,null=True)
+    expnc = models.ForeignKey(purchase_expense,on_delete=models.CASCADE,blank=True,null=True)
+    debit = models.ForeignKey(purchasedebit,on_delete=models.CASCADE,blank=True,null=True)
+    pymnt = models.ForeignKey(purchasepayment,on_delete=models.CASCADE,blank=True,null=True)
+    details = models.CharField(max_length=255, null=True)
+    account = models.CharField(max_length=255, null=True)
+    transactions = models.CharField(max_length=255, null=True)
+    date = models.DateField(blank=True,null=True)
+    details1 = models.CharField(max_length=255,blank=True,null=True)
+    details2= models.CharField(max_length=255,blank=True,default='')
+    payments=models.FloatField(blank=True,null=True)		
 
 class item_stock(models.Model):
     item = models.CharField(max_length=255, default='')

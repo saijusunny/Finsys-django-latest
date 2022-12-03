@@ -13612,74 +13612,47 @@ def balancesheet(request):
     except:
         return redirect('godash')
 
-
-@login_required(login_url='regcomp')
-def balancesheetreport(request, accounts1id):
-    try:
-        cmp1 = company.objects.get(id=request.session['uid'])
-        account = accounts1.objects.get(accounts1id=accounts1id, cid=cmp1)
-        bal = account.balance
-        context = {'cmp1': cmp1, 'account': account, 'accbal': bal}
-        if account.name == 'Account Receivable(Debtors)':
-            invoic = invoice.objects.filter(cid=cmp1)
-            creditnote = credit.objects.filter(cid=cmp1)
-            paymen = payment.objects.filter(cid=cmp1)
-            salesofline = salesrecpts.objects.filter(cid=cmp1)
-            context = {'cmp1': cmp1, 'invoic': invoic, 'creditnote': creditnote, 'salesoffline': salesofline,
-                       'payment': paymen, 'account': account,
-                       'accbal': bal}
-        elif account.name == 'Accounts Payable(Creditors)':
-            bills = vendor_statment.objects.filter(cid=cmp1)
-            bill = bills.objects.filter(cid=cmp1, payornot='openbalance')
-            bill2 = bills.objects.filter(cid=cmp1, payornot='')
-            bill3 = bills.objects.filter(cid=cmp1, payornot='debit')
-            debit = suplrcredit.objects.filter(cid=cmp1)
-            expence = expences.objects.filter(cid=cmp1)
-            context = {'cmp1': cmp1, 'bills':bills , 'bill': bill, 'bill2': bill2, 'billdebit': bill3, 'debit': debit,
-                       'expence': expence,
-                       'account': account,
-                       'accbal': bal}
-        elif account.name == 'Input CGST':
-            deb = suplrcredit.objects.filter(cid=cmp1)
-            debit = []
-            for i in deb:
-                name = i.supplier
-                x = name.split()
-                if len(x) == 3:
-                    firstname = x[0]
-                    lastname = x[1] + ' ' + x[2]
-                    supp = supplier.objects.get(
-                        firstname=firstname, lastname=lastname, cid=cmp1)
-                else:
-                    supp = supplier.objects.get(
-                        firstname=x[0], lastname=x[1], cid=cmp1)
-                if supp.state == cmp1.state:
-                    debit.append(
-                        [i.paymdate, i.refno, i.supplier, float(i.taxamount) / 2])
-            expen = expences.objects.filter(cid=cmp1)
-            expence = []
-            for i in expen:
-                name = i.payee
-                x = name.split()
-                if len(x) == 3:
-                    firstname = x[0]
-                    lastname = x[1] + ' ' + x[2]
-                    supp = supplier.objects.get(
-                        firstname=firstname, lastname=lastname, cid=cmp1)
-                else:
-                    supp = supplier.objects.get(
-                        firstname=x[0], lastname=x[1], cid=cmp1)
-                if supp.state == cmp1.state:
-                    expence.append([i.paymdate, i.refno, (i.payee).replace(
-                        u'\xa0', u''), float(i.taxamount) / 2])
-            context = {'cmp1': cmp1, 'debit1': debit,
-                       'expence1': expence, 'account': account, 'accbal': bal}
+def bsreport(request,id):
+    if 'uid' in request.session:
+        if request.session.has_key('uid'):
+            uid = request.session['uid']
         else:
-            pass
-        return render(request, 'app1/balancesheetreport.html', context)
-    except:
-        pass
+            return redirect('/')
+        cmp1 = company.objects.get(id=request.session['uid'])
 
+        toda = date.today()
+        tod = toda.strftime("%Y-%m-%d")
+        to=toda.strftime("%d-%m-%Y")
+
+        acc = balance_sheet.objects.filter(account=id,cid=cmp1)
+
+        debit=0
+        credit=0
+        total2 =0
+
+        for i in acc :
+            if i.transactions =="Billed":
+                debit+=i.payments
+
+            if i.transactions =="Vendor Credits":
+                credit+=i.payments
+
+            if i.transactions =="Expense":
+                debit+=i.payments
+
+            if i.transactions =="Invoice":
+                debit+=i.payments
+
+            if i.transactions =="Vendor Payment":
+                credit+=i.payments
+
+        fdate =""
+        ldate =""
+
+        total2 = credit-debit
+        context = {'acc':acc, 'cmp1':cmp1, 'to':to, 'tod':tod, 'fdate':fdate, 'ldate':ldate, 'debit':debit, 'credit':credit, 'total2':total2}
+        return render(request, 'app1/bsreport.html', context)
+    return redirect('/')  
 
 def profitandloss(request):
     if 'uid' in request.session:
@@ -31609,6 +31582,67 @@ def createbill(request):
             pl3.payments = billed.grand_total
             pl3.save()
 
+            bs3=balance_sheet()
+            bs3.details = billed.vendor_name
+            bs3.cid = cmp1
+            bs3.transactions = "Billed"
+            bs3.account = "Accounts Payable(Creditors)"
+            bs3.bill = billed
+            bs3.details1 = billed.bill_no
+            bs3.details2 = reference
+            bs3.date = billed.date
+            bs3.payments = billed.grand_total
+            bs3.save()
+
+            if sourceofsupply == cmp1.state:
+                bs4=balance_sheet()
+                bs4.details = billed.vendor_name
+                bs4.cid = cmp1
+                bs4.transactions = "Billed"
+                bs4.account = "Input CGST"
+                bs4.bill = billed
+                bs4.details1 = billed.bill_no
+                bs4.details2 = reference
+                bs4.date = billed.date
+                bs4.payments = billed.cgst
+                bs4.save()
+
+                bs5=balance_sheet()
+                bs5.details = billed.vendor_name
+                bs5.cid = cmp1
+                bs5.transactions = "Billed"
+                bs5.account = "Input SGST"
+                bs5.bill = billed
+                bs5.details1 = billed.bill_no
+                bs5.details2 = reference
+                bs5.date = billed.date
+                bs5.payments = billed.sgst
+                bs5.save()
+            else:
+                bs6=balance_sheet()
+                bs6.details = billed.vendor_name
+                bs6.cid = cmp1
+                bs6.transactions = "Billed"
+                bs6.account = "Input IGST"
+                bs6.bill = billed
+                bs6.details1 = billed.bill_no
+                bs6.details2 = reference
+                bs6.date = billed.date
+                bs6.payments = billed.igst
+                bs6.save()
+            
+            bs7=balance_sheet()
+            bs7.details = billed.vendor_name
+            bs7.cid = cmp1
+            bs7.transactions = "Billed"
+            bs7.account = "TDS Payable"
+            bs7.bill = billed
+            bs7.details1 = billed.bill_no
+            bs7.details2 = reference
+            bs7.date = billed.date
+            bs7.payments = billed.tcs_amount
+            bs7.save()
+
             grand_total = float(request.POST['grand_total'])
             acc = accounts1.objects.get(
                 name='Accounts Payable(Creditors)', cid=cmp1)
@@ -31796,6 +31830,92 @@ def editpurchasebill(request,id):
 
             pbill.save()
 
+            statment2=vendor_statment.objects.get(cid=cmp1,pbill=pbill)
+            statment2.vendor = pbill.vendor_name
+            statment2.cid = cmp1
+            statment2.transactions = "Billed"
+            statment2.pbill = pbill
+            statment2.details = pbill.bill_no
+            statment2.details2 = pbill.reference
+            statment2.date = pbill.date
+            statment2.balance = pbill.balance_due
+            statment2.payments = pbill.grand_total
+            statment2.save()
+
+            pl3=profit_loss.objects.get(cid=cmp1,pbill=pbill)
+            pl3.details = pbill.vendor_name
+            pl3.cid = cmp1
+            pl3.transactions = "Billed"
+            pl3.accname = "Cost of Goods Sold"
+            pl3.pbill = pbill
+            pl3.details1 = pbill.bill_no
+            pl3.details2 = pbill.reference
+            pl3.date = pbill.date
+            pl3.payments = pbill.grand_total
+            pl3.save()
+
+            bs3=balance_sheet.objects.get(cid=cmp1,bill=pbill)
+            bs3.details = pbill.vendor_name
+            bs3.cid = cmp1
+            bs3.transactions = "Billed"
+            bs3.account = "Accounts Payable(Creditors)"
+            bs3.bill = pbill
+            bs3.details1 = pbill.bill_no
+            bs3.details2 = pbill.reference
+            bs3.date = pbill.date
+            bs3.payments = pbill.grand_total
+            bs3.save()
+
+            sourceofsupply=request.POST['sourceofsupply']
+            if sourceofsupply == cmp1.state:
+                bs4=balance_sheet.objects.get(cid=cmp1,bill=pbill)
+                bs4.details = pbill.vendor_name
+                bs4.cid = cmp1
+                bs4.transactions = "Billed"
+                bs4.account = "Input CGST"
+                bs4.bill = pbill
+                bs4.details1 = pbill.bill_no
+                bs4.details2 = pbill.reference
+                bs4.date = pbill.date
+                bs4.payments = pbill.cgst
+                bs4.save()
+
+                bs5=balance_sheet.objects.get(cid=cmp1,bill=pbill)
+                bs5.details = pbill.vendor_name
+                bs5.cid = cmp1
+                bs5.transactions = "Billed"
+                bs5.account = "Input SGST"
+                bs5.bill = pbill
+                bs5.details1 = pbill.bill_no
+                bs5.details2 = pbill.reference
+                bs5.date = pbill.date
+                bs5.payments = pbill.sgst
+                bs5.save()
+            else:
+                bs6=balance_sheet.objects.get(cid=cmp1,bill=pbill)
+                bs6.details = pbill.vendor_name
+                bs6.cid = cmp1
+                bs6.transactions = "Billed"
+                bs6.account = "Input IGST"
+                bs6.bill = pbill
+                bs6.details1 = pbill.bill_no
+                bs6.details2 = pbill.reference
+                bs6.date = pbill.date
+                bs6.payments = pbill.igst
+                bs6.save()
+            
+            bs7=balance_sheet.objects.get(cid=cmp1,bill=pbill)
+            bs7.details = pbill.vendor_name
+            bs7.cid = cmp1
+            bs7.transactions = "Billed"
+            bs7.account = "TDS Payable"
+            bs7.bill = pbill
+            bs7.details1 = pbill.bill_no
+            bs7.details2 = pbill.reference
+            bs7.date = pbill.date
+            bs7.payments = pbill.tcs_amount
+            bs7.save()
+
             items = request.POST.getlist("items[]")
             hsn = request.POST.getlist("hsn[]")
             quantity = request.POST.getlist("quantity[]")
@@ -31845,9 +31965,11 @@ def deletebill(request, id):
         pbill=purchasebill.objects.get(billid=id)
         bitem = purchasebill_item.objects.all().filter(bill=id)
         stm = vendor_statment.objects.all().filter(pbill=id)
+        bls = balance_sheet.objects.all().filter(bill=id)
         pbill.delete() 
         bitem.delete() 
         stm.delete() 
+        bls.delete() 
         return redirect('gobilling')
     return redirect('gobilling')
 
@@ -32012,6 +32134,19 @@ def createexpense(request):
             pl3.payments = exp.amount
             pl3.save()
 
+            bs3=balance_sheet()
+            bs3.details = exp.vendor
+            bs3.cid = cmp1
+            bs3.transactions = "Expense"
+            bs3.account = exp.paidthrough
+            bs3.accname = exp.expenseaccount
+            bs3.expnc = exp
+            bs3.details1 = exp.expense_no
+            bs3.details2 = reference
+            bs3.date = exp.date
+            bs3.payments = exp.amount
+            bs3.save()
+
             return redirect('goexpenses')
         return render(request,'app1/goexpenses.html',{'cmp1': cmp1})
     return redirect('/') 
@@ -32103,6 +32238,19 @@ def editexpense(request,id):
             pl3.date = expnce.date
             pl3.payments = expnce.amount
             pl3.save()
+
+            bs3=balance_sheet.objects.get(cid=cmp1,expnc=expnce)
+            bs3.details = expnce.vendor
+            bs3.cid = cmp1
+            bs3.transactions = "Expense"
+            bs3.account = expnce.paidthrough
+            bs3.accname = expnce.expenseaccount
+            bs3.expnc = expnce
+            bs3.details1 = expnce.expense_no
+            bs3.details2 = expnce.reference
+            bs3.date = expnce.date
+            bs3.payments = expnce.amount
+            bs3.save()
 
             return redirect('goexpenses')
         return render(request,'app1/goexpenses.html',{'cmp1': cmp1})
@@ -32214,27 +32362,51 @@ def createpurchasepymnt(request):
             return redirect('/')
         cmp1 = company.objects.get(id=request.session['uid'])
         if request.method == 'POST':
-            reference = '1000'
             pymnt1 = purchasepayment(vendor = request.POST['vendor'],
                                     paymentdate = request.POST['paymentdate'],
                                     paymentmethod=request.POST['paymentmethod'],
                                     depositeto=request.POST['depto'],
+                                    reference=request.POST['reference'],
                                     amtreceived=request.POST['amtreceived'],
                                     paymentamount=request.POST['paymentamount'],
                                     amtcredit=request.POST['amtcredit'])
-            pymnt1.save()
-            pymnt1.reference = int(pymnt1.reference) + pymnt1.pymntid
+
             pymnt1.save()
 
             statment2=vendor_statment()
             statment2.vendor = pymnt1.vendor
             statment2.cid = cmp1
             statment2.transactions = "Payable"
-            statment2.paymnt = pymnt1
+            statment2.paymnt = pymnt1.pymnt1
             statment2.details = pymnt1.reference
             statment2.date = pymnt1.paymentdate
             statment2.payments = pymnt1.paymentamount
             statment2.save()
+
+            bs3=balance_sheet()
+            bs3.details = pymnt1.vendor
+            bs3.cid = cmp1
+            bs3.transactions = "Vendor Payment"
+            bs3.account ="Accounts Payable(Creditors)"
+            bs3.pymnt = pymnt1
+            bs3.details0 = pymnt1.depositeto
+            bs3.details1 = pymnt1.pymntid
+            bs3.details2 = pymnt1.reference
+            bs3.date = pymnt1.paymentdate
+            bs3.payments = pymnt1.paymentamount
+            bs3.save()
+
+            bs3=balance_sheet()
+            bs3.details = pymnt1.vendor
+            bs3.cid = cmp1
+            bs3.transactions = "Vendor Payment"
+            bs3.account = pymnt1.depositeto
+            bs3.pymnt = pymnt1
+            bs3.details1 = pymnt1.pymntid
+            bs3.details2 = reference
+            bs3.date = pymnt1.paymentdate
+            bs3.payments = pymnt1.paymentamount
+            bs3.save()
 
             billdate = request.POST.getlist("billdate[]")
             billno = request.POST.getlist("billno[]")
@@ -32376,6 +32548,20 @@ def editpurchasepymnt(request,id):
             statment2.payments = paymt.paymentamount
             statment2.save()
 
+            bs3=balance_sheet.objects.get(cid=cmp1,pymnt=paymt)
+            bs3.details = paymt.vendor
+            bs3.cid = cmp1
+            bs3.transactions = "Vendor Payment"
+            bs3.account = "Accounts Payable(Creditors)"
+            bs3.accname = "Accounts Payable(Creditors)"
+            bs3.pymnt = paymt
+            bs3.details0 = paymt.depositeto
+            bs3.details1 = paymt.pymntid
+            bs3.details2 = paymt.reference
+            bs3.date = paymt.paymentdate
+            bs3.payments = paymt.paymentamount
+            bs3.save()
+
             pymtbill = purchasepayment1.objects.filter(pymnt=paymt)               
             try:
                 for i in pymtbill:
@@ -32487,6 +32673,9 @@ def createpurchasedebit(request):
                                     debitdate=request.POST['debitdate'],
                                     supply=request.POST['supply'],
                                     billno=request.POST['billno'],
+                                    cgst=request.POST['cgst'],
+                                    sgst=request.POST['sgst'],
+                                    igst=request.POST['igst'],
                                     subtotal=request.POST['subtotal'],
                                     taxamount=request.POST['taxamount'],
                                     grandtotal=request.POST['grandtotal'],
@@ -32507,6 +32696,52 @@ def createpurchasedebit(request):
             pl3.payments = pdebit.grandtotal
             pl3.save()
 
+            bs3=balance_sheet()
+            bs3.details = pdebit.vendor
+            bs3.cid = cmp1
+            bs3.transactions = "Vendor Credits"
+            bs3.account = "Accounts Payable(Creditors)"
+            bs3.debit = pdebit
+            bs3.details1 = pdebit.debit_no
+            bs3.date = pdebit.debitdate
+            bs3.payments = pdebit.grandtotal
+            bs3.save()
+
+            supply=request.POST['supply']
+            if supply == cmp1.state:
+                bs4=balance_sheet()
+                bs4.details = pdebit.vendor
+                bs4.cid = cmp1
+                bs4.transactions = "Vendor Credits"
+                bs4.account = "Input CGST"
+                bs4.debit = pdebit
+                bs4.details1 = pdebit.debit_no
+                bs4.date = pdebit.debitdate
+                bs4.payments = pdebit.cgst
+                bs4.save()
+
+                bs5=balance_sheet()
+                bs5.details = pdebit.vendor
+                bs5.cid = cmp1
+                bs5.transactions = "Vendor Credits"
+                bs5.account = "Input SGST"
+                bs5.debit = pdebit
+                bs5.details1 = pdebit.debit_no
+                bs5.date = pdebit.debitdate
+                bs5.payments = pdebit.sgst
+                bs5.save()
+            else:
+                bs6=balance_sheet()
+                bs6.details = pdebit.vendor
+                bs6.cid = cmp1
+                bs6.transactions = "Vendor Credits"
+                bs6.account = "Input IGST"
+                bs6.debit = pdebit
+                bs6.details1 = pdebit.debit_no
+                bs6.date = pdebit.debitdate
+                bs6.payments = pdebit.igst
+                bs6.save()
+
             grandtotal = float(request.POST['grandtotal'])
             acc = accounts1.objects.get(
                 name='Accounts Payable(Creditors)', cid=cmp1)
@@ -32525,6 +32760,25 @@ def createpurchasedebit(request):
                     acc.save()
             except:
                 pass
+
+            if supply == cmp1.state:
+                cgst = float(request.POST['cgst'])
+                accocgst = accounts1.objects.get(
+                    name='Input CGST', cid=cmp1)
+                accocgst.balance = round(float(accocgst.balance - cgst), 2)
+                accocgst.save()
+                sgst = float(request.POST['sgst'])
+                accosgst = accounts1.objects.get(
+                    name='Input SGST', cid=cmp1)
+                accosgst.balance = round(float(accosgst.balance - sgst), 2)
+                accosgst.save()
+            else:
+                igst = float(request.POST['igst'])
+                accoigst = accounts1.objects.get(
+                    name='Input IGST', cid=cmp1)
+                accoigst.balance = round(
+                    float(accoigst.balance - igst), 2)
+                accoigst.save()
 
 
             items = request.POST.getlist("items[]")
@@ -32604,10 +32858,70 @@ def editpurchasedebit(request,id):
             pdebt.email=request.POST['email']
             pdebt.billno=request.POST['billno']
             pdebt.subtotal=request.POST['subtotal']
+            pdebt.cgst=request.POST['cgst']
+            pdebt.sgst=request.POST['sgst']
+            pdebt.igst=request.POST['igst']
             pdebt.taxamount=request.POST['taxamount']
             pdebt.grandtotal=request.POST['grandtotal']
 
             pdebt.save()
+
+            pl3=profit_loss.objects.get(cid=cmp1,pdebit=pdebt)
+            pl3.details = pdebt.vendor
+            pl3.cid = cmp1
+            pl3.transactions = "Vendor Credits"
+            pl3.accname = "Cost of Goods Sold"
+            pl3.pdebit = pdebt
+            pl3.details1 = pdebt.debit_no
+            pl3.date = pdebt.debitdate
+            pl3.payments = pdebt.grandtotal
+            pl3.save()
+
+            bs3=balance_sheet.objects.get(cid=cmp1,debit=pdebt)
+            bs3.details = pdebt.vendor
+            bs3.cid = cmp1
+            bs3.transactions = "Vendor Credits"
+            bs3.account = "Accounts Payable(Creditors)"
+            bs3.debit = pdebt
+            bs3.details1 = pdebt.debit_no
+            bs3.date = pdebt.debitdate
+            bs3.payments = pdebt.grandtotal
+            bs3.save()
+
+            supply=request.POST['supply']
+            if supply == cmp1.state:
+                bs4=balance_sheet.objects.get(cid=cmp1,debit=pdebt)
+                bs4.details = pdebt.vendor
+                bs4.cid = cmp1
+                bs4.transactions = "Vendor Credits"
+                bs4.account = "Input CGST"
+                bs4.debit = pdebt
+                bs4.details1 = pdebt.debit_no
+                bs4.date = pdebt.debitdate
+                bs4.payments = pdebt.cgst
+                bs4.save()
+
+                bs5=balance_sheet.objects.get(cid=cmp1,debit=pdebt)
+                bs5.details = pdebt.vendor
+                bs5.cid = cmp1
+                bs5.transactions = "Vendor Credits"
+                bs5.account = "Input SGST"
+                bs5.debit = pdebt
+                bs5.details1 = pdebt.debit_no
+                bs5.date = pdebt.debitdate
+                bs5.payments = pdebt.sgst
+                bs5.save()
+            else:
+                bs6=balance_sheet.objects.get(cid=cmp1,debit=pdebt)
+                bs6.details = pdebt.vendor
+                bs6.cid = cmp1
+                bs6.transactions = "Vendor Credits"
+                bs6.account = "Input IGST"
+                bs6.debit = pdebt
+                bs6.details1 = pdebt.debit_no
+                bs6.date = pdebt.debitdate
+                bs6.payments = pdebt.igst
+                bs6.save()
 
             items = request.POST.getlist("items[]")
             hsn = request.POST.getlist("hsn[]")

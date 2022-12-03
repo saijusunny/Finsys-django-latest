@@ -7,6 +7,9 @@
             margin-left: 660px;
             margin-top: -30px;
         }
+        .tr{
+            cursor:pointer;
+        }
     </style>
     <body>
     <br><br>
@@ -100,7 +103,7 @@
                                 <tr><td style="color: black; padding-left: 60px;"><b>Cash</b></td></tr>
                                 {% for i in account %}
                                     {% if i.balance != 0.0 %}
-                                        <tr>
+                                        <tr class="tr" onclick="window.location='bsreport/{{ i.name }} ';">
                                             <td class="center font-weight-light"
                                                 style="color: black; width: 85%; padding-left: 90px">{{ i.name }}</td>
                                             <td class="center font-weight-light"
@@ -186,7 +189,7 @@
                                 </tr>
                                 {% for i in acc8 %}
                                     {% if i.balance != 0.0 %}
-                                        <tr>
+                                        <tr class="tr" onclick="window.location='bsreport/{{ i.name }} ';">
                                             <td class="center font-weight-light"
                                                 style="color: black; width: 85%; padding-left: 90px">{{ i.name }}</td>
                                             <td class="center font-weight-light"
@@ -196,7 +199,7 @@
                                 {% endfor %}
                                 {% for i in acc9 %}
                                     {% if i.balance != 0.0 %}
-                                        <tr>
+                                        <tr class="tr" onclick="window.location='bsreport/{{ i.name }} ';">
                                             <td class="center font-weight-light"
                                                 style="color: black; width: 85%; padding-left: 90px">{{ i.name }}</td>
                                             <td class="center font-weight-light"
@@ -249,11 +252,14 @@
                                 <tr>
                                     <td style="color: black; padding-left: 30px;"><b>Current Liabilities</b></td>
                                 </tr>
+                                <tr>
+                                    <td style="color: black; padding-left: 60px;"><b>TDS Payable</b></td>
+                                </tr>
                                 {% for i in acc4 %}
                                     {% if i.balance != 0.0 %}
-                                        <tr>
+                                        <tr class="tr" onclick="window.location='bsreport/{{ i.name }} ';">
                                             <td class="center"
-                                                style="color: black; width: 85%; padding-left: 60px"><b>{{ i.name }}</b></td>
+                                                style="color: black; width: 85%; padding-left: 90px">{{ i.name }}</td>
                                             <td class="center font-weight-light"
                                                 style="color: black;">{{ i.balance }}</td>
                                         </tr>
@@ -319,7 +325,7 @@
                                 </tr>
                                 {% for i in account6 %}
                                     {% if i.balance != 0.0 %}
-                                        <tr onclick="window.location='balancesheetreport/{{ account.accounts1id }} ';">
+                                        <tr class="tr" onclick="window.location='bsreport/{{ i.name }} ';">
                                             <td class="center font-weight-light"
                                                 style="color: black; width: 85%; padding-left: 90px">{{ i.name }}</td>
                                             <td class="center font-weight-light"
