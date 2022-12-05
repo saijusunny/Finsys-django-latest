@@ -747,6 +747,7 @@ urlpatterns = [
     path('plreport3/<int:id>', views.plreport3, name='plreport3'),
     path('plreport11/<str:id>', views.plreport11, name='plreport11'),
     path('bsreport/<str:id>', views.bsreport, name='bsreport'),
+    path('trial_balance', views.trial_balance, name='trial_balance'),
     # path('plreport/<str:id>', views.plreport, name='plreport'),
 
     re_path(r'^demo$', views.demo, name='demo'),

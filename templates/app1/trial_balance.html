@@ -11,33 +11,19 @@
             cursor:pointer;
         }
     </style>
-    <script>
-        var tableOffset = $("#table-1").offset().top;
-var $header = $("#table-1 > thead").clone();
-var $fixedHeader = $("#header-fixed").append($header);
 
-$(window).bind("scroll", function() {
-  var offset = $(this).scrollTop();
-
-  if (offset >= tableOffset && $fixedHeader.is(":hidden")) {
-    $fixedHeader.show();
-  } else if (offset < tableOffset) {
-    $fixedHeader.hide();
-  }
-});
-    </script>
     <body>
     <br><br>
     <div class="card radius-15">
         <div class="card-body">
             <div class="card-title">
-                <center><h2 class="mb-0">BALANCE SHEET</h2></center>
+                <center><h2 class="mb-0">Trial Balance</h2></center>
             </div>
             <hr>
         </div>
     </div>
     <div class="card radius-15 p-3">
-        <form action="{% url 'balancesheetfilter' %}" method="post">
+        <form action="{% url 'profitandlossfilter' %}" method="post">
             {% csrf_token %}
             <div class="card-body">
                 <div class="row">
@@ -64,6 +50,7 @@ $(window).bind("scroll", function() {
                     </div>
                     <div class="col-md-3"></div>
                 </div>
+
                 <div class="row">
                     <div class="col-md-8 mt-3"></div>
                     <div class="col-md-2 mt-3">
@@ -82,6 +69,8 @@ $(window).bind("scroll", function() {
             </div>
         </form>
     </div>
+
+    <br><br>
     <div class="card radius-15 p-5" style="margin-bottom: 50px;">
         <div class="card-body">
             <div class="row">
@@ -99,324 +88,126 @@ $(window).bind("scroll", function() {
                         </div>
 
                         <div class="table-responsive" style="margin-top: 100px;">
-                            <table class="table table-hover">
-                                <thead>
-                                <tr>
-                                    <th class="center font-weight-light border-secondary"
-                                        style="color: black; width: 85%;"></th>
-                                    <th class="center font-weight-bolder border-secondary" style="color: black;">TOTAL
-                                    </th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <tr>
-                                    <td style="color: black;"><b>Assets</b></td>
-                                </tr>
-                                <tr>
-                                    <td style="color: black; padding-left: 30px;"><b>Current Assets</b></td>
-                                </tr>
-                                <tr><td style="color: black; padding-left: 60px;"><b>Cash</b></td></tr>
-                                {% for i in account %}
-                                    {% if i.balance != 0.0 %}
-                                        <tr class="tr" onclick="window.location='bsreport/{{ i.name }} ';">
-                                            <td class="center font-weight-light"
-                                                style="color: black; width: 85%; padding-left: 90px">{{ i.name }}</td>
-                                            <td class="center font-weight-light"
-                                                style="color: black;">{{ i.balance }}</td>
-                                        </tr>
-                                    {% endif %}
-                                {% endfor %}
-                                <tr>
-                                    <td style="color: black; padding-left: 60px; width: 85%;" class="border-secondary">
-                                        <b>Total for Cash</b>
-                                    </td>
-                                    <td style="color: black;" class="center font-weight-light font-weight-bold border-secondary">
-                                        {{ cashtot }}
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td style="color: black; padding-left: 60px;" class="border-secondary"><b>Bank</b></td>
-                                    <td style="color: black; padding-left: 50px;" class="border-secondary"><b></b></td>
-                                </tr>
-                                {% for i in acc1 %}
-                                    {% if i.balance != 0.0 %}
+                            <div class="fixTableHead">
+                                <table class="table table-hover">
+                                    <thead>
                                         <tr>
-                                            <td class="center font-weight-light"
-                                                style="color: black; width: 85%; padding-left: 90px">{{ i.name }}</td>
-                                            <td class="center font-weight-light"
-                                                style="color: black;">{{ i.balance }}</td>
+                                            <th class="center font-weight-bolder border-secondary" style="color: black;">ACCOUNT</th>
+                                            <th class="center font-weight-bolder border-secondary" style="color: black;">DEBIT</th>
+                                            <th class="center font-weight-bolder border-secondary" style="color: black;">CREDIT</th>
                                         </tr>
-                                    {% endif %}
-                                {% endfor %}
-                                <tr>
-                                    <td style="color: black; padding-left: 60px; width: 85%;" class="border-secondary">
-                                        <b>Total for Bank</b>
-                                    </td>
-                                    <td style="color: black;" class="center font-weight-light font-weight-bold border-secondary">
-                                        {{ banktot }}
-                                    </td>
-                                </tr>
-                                {% for i in account1 %}
-                                    {% if i.balance != 0.0 %}
+                                    </thead>
+                                    <tbody>
                                         <tr>
-                                            <td class="center font-weight-light"
-                                                style="color: black; width: 85%; padding-left: 60px">{{ i.name }}</td>
-                                            <td class="center font-weight-light"
-                                                style="color: black;">{{ i.balance }}</td>
+                                            <td style="color: black; padding-left: 30px;"><b>Assets</b></td>
+                                            <td style="color: black; padding-left: 30px;"><b></b></td>
+                                            <td style="color: black; padding-left: 30px;"><b></b></td>
                                         </tr>
-                                    {% endif %}
-                                {% endfor %}
-                                <tr>
-                                    <td style="color: black; padding-left: 60px;" class="border-secondary">
-                                        <b>Account Receivable(Debtors)</b>
-                                    </td>
-                                    <td style="color: black; padding-left: 50px;" class="border-secondary"><b></b></td>
-                                </tr>
-                                {% for i in account2 %}
-                                    {% if i.balance != 0.0 %}
-                                        <tr class="tr" onclick="window.location='bsreport/{{ i.name }} ';">
-                                            <td class="center font-weight-light"
-                                                style="color: black; width: 85%; padding-left: 90px">{{ i.name }}</td>
-                                            <td class="center font-weight-light"
-                                                style="color: black;">{{ i.balance }}</td>
-                                        </tr>
-                                    {% endif %}
-                                {% endfor %}
-                                {% for i in account3 %}
-                                    {% if i.balance != 0.0 %}
+                                        {% for i in ar %}
+                                            {% if i.payments != 0.0 %}
+                                                <tr class="tr" onclick="window.location='plreport11/{{ i.accname }} ';">
+                                                    <td class="center font-weight-light border-secondary" style="color: black; padding-left: 90px">
+                                                        {{ i.account }}
+                                                    </td>
+                                                    <td class="center font-weight-light" style="color: black;">
+                                                        {{ i.payments }}
+                                                    </td>
+                                                    <td class="center font-weight-light" style="color: black;">
+                                                        {{ i.payments }}
+                                                    </td>
+                                                </tr>
+                                            {% endif %}
+                                        {% endfor %}
+                                        <hr>
                                         <tr>
-                                            <td class="center font-weight-light"
-                                                style="color: black; width: 85%; padding-left: 90px">{{ i.name }}</td>
-                                            <td class="center font-weight-light"
-                                                style="color: black;">{{ i.balance }}</td>
+                                            <td style="color: black; padding-left: 30px;" class="border-secondary"><b>Liabilities</b></td>
+                                            <td style="color: black; padding-left: 30px;" class="border-secondary"><b></b></td>
+                                            <td style="color: black; padding-left: 30px;" class="border-secondary"><b></b></td>
                                         </tr>
-                                    {% endif %}
-                                {% endfor %}
-                                <tr>
-                                    <td style="color: black; padding-left: 60px; width: 85%;" class="border-secondary">
-                                        <b>Total Account Receivable(Debtors)</b></td>
-                                    <td style="color: black;"
-                                        class="center font-weight-light font-weight-bold border-secondary">{{ tar }}</td>
-                                </tr>
-                                <tr>
-                                    <td style="color: black; padding-left: 60px;" class="border-secondary"><b>GST Receivable</b></td>
-                                    <td style="color: black; padding-left: 60px;" class="border-secondary"><b></b></td>
-                                </tr>
-                                {% for i in acc8 %}
-                                    {% if i.balance != 0.0 %}
-                                        <tr class="tr" onclick="window.location='bsreport/{{ i.name }} ';">
-                                            <td class="center font-weight-light"
-                                                style="color: black; width: 85%; padding-left: 90px">{{ i.name }}</td>
-                                            <td class="center font-weight-light"
-                                                style="color: black;">{{ i.balance }}</td>
-                                        </tr>
-                                    {% endif %}
-                                {% endfor %}
-                                {% for i in acc9 %}
-                                    {% if i.balance != 0.0 %}
-                                        <tr class="tr" onclick="window.location='bsreport/{{ i.name }} ';">
-                                            <td class="center font-weight-light"
-                                                style="color: black; width: 85%; padding-left: 90px">{{ i.name }}</td>
-                                            <td class="center font-weight-light"
-                                                style="color: black;">{{ i.balance }}</td>
-                                        </tr>
-                                    {% endif %}
-                                {% endfor %}
-                                {% for i in acc10 %}
-                                    {% if i.balance != 0.0 %}
+                                        {% for i in ap %}
+                                            {% if i.payments != 0.0 %}
+                                                <tr class="tr" onclick="window.location='plreport11/{{ i.accname }} ';">
+                                                    <td class="center font-weight-light border-secondary" style="color: black; padding-left: 90px">
+                                                        {{ i.account }}
+                                                    </td>
+                                                    <td class="center font-weight-light border-secondary" style="color: black;">
+                                                        
+                                                    </td>
+                                                    <td class="center font-weight-light border-secondary" style="color: black;">
+                                                        {{ i.payments }}
+                                                    </td>
+                                                </tr>
+                                            {% endif %}
+                                        {% endfor %}
+    
+                                        {% for i in cl %}
+                                            {% if i.payments != 0.0 %}
+                                                <tr class="tr" onclick="window.location='plreport11/{{ i.accname }} ';">
+                                                    <td class="center font-weight-light" style="color: black; padding-left: 90px">
+                                                        {{ i.account }}
+                                                    </td>
+                                                    <td class="center font-weight-light" style="color: black;">
+                                                        
+                                                    </td>
+                                                    <td class="center font-weight-light" style="color: black;">{{ i.payments }}</td>
+                                                </tr>
+                                            {% endif %}
+                                        {% endfor %}
+                                        <hr>
+    
                                         <tr>
-                                            <td class="center font-weight-light"
-                                                style="color: black; width: 85%; padding-left: 90px">{{ i.name }}</td>
-                                            <td class="center font-weight-light"
-                                                style="color: black;">{{ i.balance }}</td>
+                                            <td style="color: black; padding-left: 30px;" class="border-secondary"><b>Income</b></td>
+                                            <td style="color: black; padding-left: 30px;" class="border-secondary"><b></b></td>
+                                            <td style="color: black; padding-left: 30px;" class="border-secondary"><b></b></td>
                                         </tr>
-                                    {% endif %}
-                                {% endfor %}
-                                <tr>
-                                    <td style="color: black; padding-left: 60px; width: 85%;" class="border-secondary">
-                                        <b>Total for GST Receivable</b>
-                                    </td>
-                                    <td style="color: black;" class="center font-weight-light font-weight-bold border-secondary">
-                                        {{ gsttot1 }}
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td style="color: black; padding-left: 30px; width: 85%;" class="border-secondary">
-                                        <b>Total Current Assets</b></td>
-                                    <td style="color: black;"
-                                        class="center font-weight-light font-weight-bold border-secondary">{{ tca }}</td>
-                                </tr>
-                                <tr>
-                                    <td style="color: black; width: 85%;" class="border-secondary"><b>Total Assets</b>
-                                    </td>
-                                    <td style="color: black;"
-                                        class="center font-weight-light font-weight-bold border-secondary">{{ tca }}</td>
-                                </tr>
-                                </tbody>
-                            </table>
-                            <hr class="bg-secondary">
-                            <hr class="bg-secondary">
-                            <table class="table table-hover">
-                                <thead>
-                                <tr>
-                                    <th style="color: black; width: 85%;">Liabilities and Equity</th>
-                                    <th></th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <tr>
-                                    <td style="color: black; padding-left: 30px;"><b>Current Liabilities</b></td>
-                                </tr>
-                                <tr>
-                                    <td style="color: black; padding-left: 60px;"><b>TDS Payable</b></td>
-                                </tr>
-                                {% for i in acc4 %}
-                                    {% if i.balance != 0.0 %}
-                                        <tr class="tr" onclick="window.location='bsreport/{{ i.name }} ';">
-                                            <td class="center"
-                                                style="color: black; width: 85%; padding-left: 90px">{{ i.name }}</td>
-                                            <td class="center font-weight-light"
-                                                style="color: black;">{{ i.balance }}</td>
-                                        </tr>
-                                    {% endif %}
-                                {% endfor %}
-                                <tr>
-                                    <td style="color: black; padding-left: 60px;" class="border-secondary"><b>GST Payable</b></td>
-                                    <td style="color: black; padding-left: 60px;" class="border-secondary"><b></b></td>
-                                </tr>
-                                {% for i in acc5 %}
-                                    {% if i.balance != 0.0 %}
+                                        {% for i in incm %}
+                                            {% if i.payments != 0.0 %}
+                                                <tr class="tr" onclick="window.location='plreport11/{{ i.accname }} ';">
+                                                    <td class="center font-weight-light border-secondary" style="color: black; padding-left: 90px">
+                                                       
+                                                    </td>
+                                                    <td class="center font-weight-light border-secondary" style="color: black;">
+                                                        {{ i.payments }}
+                                                    </td>
+                                                    <td class="center font-weight-light border-secondary" style="color: black;"></td>
+                                                </tr>
+                                            {% endif %}
+                                        {% endfor %}
+    
                                         <tr>
-                                            <td class="center font-weight-light"
-                                                style="color: black; width: 85%; padding-left: 90px">{{ i.name }}</td>
-                                            <td class="center font-weight-light"
-                                                style="color: black;">{{ i.balance }}</td>
+                                            <td style="color: black; padding-left: 30px;" class="border-secondary"><b>Expense</b></td>
+                                            <td style="color: black; padding-left: 30px;" class="border-secondary"><b></b></td>
+                                            <td style="color: black; padding-left: 30px;" class="border-secondary"><b></b></td>
                                         </tr>
-                                    {% endif %}
-                                {% endfor %}
-                                {% for i in acc6 %}
-                                    {% if i.balance != 0.0 %}
-                                        <tr>
-                                            <td class="center font-weight-light"
-                                                style="color: black; width: 85%; padding-left: 90px">{{ i.name }}</td>
-                                            <td class="center font-weight-light"
-                                                style="color: black;">{{ i.balance }}</td>
-                                        </tr>
-                                    {% endif %}
-                                {% endfor %}
-                                {% for i in acc7 %}
-                                    {% if i.balance != 0.0 %}
-                                        <tr>
-                                            <td class="center font-weight-light"
-                                                style="color: black; width: 85%; padding-left: 90px">{{ i.name }}</td>
-                                            <td class="center font-weight-light"
-                                                style="color: black;">{{ i.balance }}</td>
-                                        </tr>
-                                    {% endif %}
-                                {% endfor %}
-                                <tr>
-                                    <td style="color: black; padding-left: 60px; width: 85%;" class="border-secondary">
-                                        <b>Total for GST Payable</b>
-                                    </td>
-                                    <td style="color: black;" class="center font-weight-light font-weight-bold border-secondary">
-                                        {{ gsttot }}
-                                    </td>
-                                </tr>
-
-                                {% for i in account5 %}
-                                    {% if i.balance != 0.0 %}
-                                        <tr>
-                                            <td class="center font-weight-light"
-                                                style="color: black; width: 85%; padding-left: 60px">{{ i.name }}</td>
-                                            <td class="center font-weight-light"
-                                                style="color: black;">{{ i.balance }}</td>
-                                        </tr>
-                                    {% endif %}
-                                {% endfor %}
-                                <tr>
-                                    <td style="color: black; padding-left: 60px;" class="border-secondary"><b>Accounts Payable(Creditors)</b>
-                                    <td style="color: black; padding-left: 60px;" class="border-secondary"><b></b>
-                                    </td>
-                                </tr>
-                                {% for i in account6 %}
-                                    {% if i.balance != 0.0 %}
-                                        <tr class="tr" onclick="window.location='bsreport/{{ i.name }} ';">
-                                            <td class="center font-weight-light"
-                                                style="color: black; width: 85%; padding-left: 90px">{{ i.name }}</td>
-                                            <td class="center font-weight-light"
-                                                style="color: black;">{{ i.balance }}</td>
-                                        </tr>
-                                    {% endif %}
-                                {% endfor %}
-                                {% for i in account7 %}
-                                    {% if i.balance != 0.0 %}
-                                        <tr>
-                                            <td class="center font-weight-light"
-                                                style="color: black; width: 85%; padding-left: 90px">{{ i.name }}</td>
-                                            <td class="center font-weight-light"
-                                                style="color: black;">{{ i.balance }}</td>
-                                        </tr>
-                                    {% endif %}
-                                {% endfor %}
-                                <tr>
-                                    <td style="color: black; padding-left: 60px; width: 85%;" class="border-secondary">
-                                        <b>Total Account Payable(Creditors)</b></td>
-                                    <td style="color: black;"
-                                        class="center font-weight-light font-weight-bold border-secondary">{{ tap }}</td>
-                                </tr>
-                                <tr>
-                                    <td style="color: black; padding-left: 30px; width: 85%;" class="border-secondary">
-                                        <b>Total Current Liabilities</b></td>
-                                    <td style="color: black;"
-                                        class="center font-weight-light font-weight-bold border-secondary">{{ tcl }}</td>
-                                </tr>
-                                <tr>
-                                    <td style="color: black; padding-left: 30px; width: 85%" class="border-secondary">
-                                        <b>Equity</b>
-                                    </td>
-                                    <td class="center font-weight-light font-weight-bold border-secondary"></td>
-                                </tr>
-                                {% for i in account8 %}
-                                    {% if i.balance != 0.0 %}
-                                        <tr>
-                                            <td class="center font-weight-light"
-                                                style="color: black; width: 85%; padding-left: 60px">{{ i.name }}</td>
-                                            <td class="center font-weight-light"
-                                                style="color: black;">{{ i.balance }}</td>
-                                        </tr>
-                                    {% endif %}
-                                {% endfor %}
-                                {% for i in account9 %}
-                                    {% if i.balance != 0.0 %}
-                                        <tr>
-                                            <td class="center font-weight-light"
-                                                style="color: black; width: 85%; padding-left: 60px">{{ i.name }}</td>
-                                            <td class="center font-weight-light"
-                                                style="color: black;">{{ i.balance }}</td>
-                                        </tr>
-                                    {% endif %}
-                                {% endfor %}
-                                <tr class="tr" onclick="window.location='profitandloss';">
-                                    <td style="color: black; padding-left: 60px; width: 85%">Profit for the year
-                                    </td>
-                                    <td class="center font-weight-light" style="color: black;"><b>{{ proandloss }}</b>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td style="color: black; padding-left: 30px; width: 85%" class="border-secondary">
-                                        <b>Total Equity</b>
-                                    </td>
-                                    <td class="center border-secondary" style="color: black;"><b>{{ totequity }}</b>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td style="color: black; width: 85%" class="border-secondary"><b>Total Liabilities
-                                        and Equity</b>
-                                    </td>
-                                    <td class="center border-secondary" style="color: black;"><b>{{ tlande }}</b></td>
-                                </tr>
-                                </tbody>
-                            </table>
+                                        {% for i in cogs %}
+                                            {% if i.payments != 0.0 %}
+                                                <tr class="tr" onclick="window.location='plreport11/{{ i.accname }} ';">
+                                                    <td class="center font-weight-light border-secondary" style="color: black; padding-left: 90px">
+                                                       {{ i.accname }}
+                                                    </td>
+                                                    <td class="center font-weight-light border-secondary" style="color: black;">
+                                                        {{ i.payments }}
+                                                    </td>
+                                                    <td class="center font-weight-light border-secondary" style="color: black;"></td>
+                                                </tr>
+                                            {% endif %}
+                                        {% endfor %}
+                                        {% for i in expc %}
+                                            {% if i.payments != 0.0 %}
+                                                <tr class="tr" onclick="window.location='plreport11/{{ i.accname }} ';">
+                                                    <td class="center font-weight-light border-secondary" style="color: black; padding-left: 90px">
+                                                        {{ i.accname }}
+                                                    </td>
+                                                    <td class="center font-weight-light border-secondary" style="color: black;">
+                                                        {{ i.payments }}
+                                                    </td>
+                                                    <td class="center font-weight-light border-secondary" style="color: black;"></td>
+                                                </tr>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -462,7 +253,7 @@ $(window).bind("scroll", function() {
                 <div class="modal-body">
                     <form>
                         <div class="rectangle" style="background-color: white;
-      
+
        width: 800px;
         height: 1700px;
         padding: 50px;
@@ -471,7 +262,7 @@ $(window).bind("scroll", function() {
         border: 1px solid grey;">
                             <h3 style="color:black;font:10px;">Customise Report</h3>
                             <div class="line" style="
-                                                      
+
       border: none;
       height: 1px;
       /* Set the hr color */

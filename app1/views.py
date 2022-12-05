@@ -3374,6 +3374,68 @@ def invcreate2(request):
         pl3.payments = inv2.grandtotal
         pl3.save()
 
+        bs3=balance_sheet()
+        bs3.details = inv2.customername
+        bs3.cid = cmp1
+        bs3.transactions = "Invoice"
+        bs3.account = "Account Receivable(Debtors)"
+        bs3.invc = inv2
+        bs3.details1 = inv2.invoiceno
+        bs3.details2 = inv2.invoice_orderno
+        bs3.date = inv2.invoicedate
+        bs3.payments = inv2.grandtotal
+        bs3.save()
+
+        placosupply=request.POST['placosupply']
+        if placosupply == cmp1.state:
+            bs4=balance_sheet()
+            bs4.details = inv2.customername
+            bs4.cid = cmp1
+            bs4.transactions = "Invoice"
+            bs4.account = "Output CGST"
+            bs4.invc = inv2
+            bs4.details1 = inv2.invoiceno
+            bs4.details2 = inv2.invoice_orderno
+            bs4.date = inv2.invoicedate
+            bs4.payments = inv2.CGST
+            bs4.save()
+
+            bs5=balance_sheet()
+            bs5.details = inv2.customername
+            bs5.cid = cmp1
+            bs5.transactions = "Invoice"
+            bs5.account = "Output SGST"
+            bs5.invc = inv2
+            bs5.details1 = inv2.invoiceno
+            bs5.details2 = inv2.invoice_orderno
+            bs5.date = inv2.invoicedate
+            bs5.payments = inv2.SGST
+            bs5.save()
+        else:
+            bs6=balance_sheet()
+            bs6.details = inv2.customername
+            bs6.cid = cmp1
+            bs6.transactions = "Invoice"
+            bs6.account = "Output IGST"
+            bs6.invc = inv2
+            bs6.details1 = inv2.invoiceno
+            bs6.details2 = inv2.invoice_orderno
+            bs6.date = inv2.invoicedate
+            bs6.payments = inv2.IGST
+            bs6.save()
+            
+        bs7=balance_sheet()
+        bs7.details = inv2.customername
+        bs7.cid = cmp1
+        bs7.transactions = "Invoice"
+        bs7.account = "TDS Receivable"
+        bs7.invc = inv2
+        bs7.details1 = inv2.invoiceno
+        bs7.details2 = inv2.invoice_orderno
+        bs7.date = inv2.invoicedate
+        bs7.payments = inv2.TCS
+        bs7.save()
+
         grandtotal = float(request.POST['grandtotal'])
         acc = accounts1.objects.get(
             name='Account Receivable(Debtors)', cid=cmp1)
@@ -28002,11 +28064,29 @@ def paymentcreate2(request):
         statment2.Payments = pay2.amtapply
         statment2.save()
         
-        
+        bs3=balance_sheet()
+        bs3.details = pay2.customer
+        bs3.cid = cmp1
+        bs3.transactions = "Customer Payment"
+        bs3.account ="Account Receivable(Debtors)"
+        bs3.inv_pymnt = pay2
+        bs3.details1 = pay2.paymentid
+        bs3.details2 = pay2.refno
+        bs3.date = pay2.paymdate
+        bs3.payments = pay2.amtapply
+        bs3.save()
 
-
-
-
+        bs3=balance_sheet()
+        bs3.details = pay2.customer
+        bs3.cid = cmp1
+        bs3.transactions = "Customer Payment"
+        bs3.account = pay2.depto
+        bs3.inv_pymnt = pay2
+        bs3.details1 = pay2.paymentid
+        bs3.details2 = pay2.refno
+        bs3.date = pay2.paymdate
+        bs3.payments = pay2.amtapply
+        bs3.save()
 
         invno = request.POST.getlist("invno[]")
         invdate = request.POST.getlist("invdate[]")
@@ -31573,18 +31653,20 @@ def createbill(request):
             pl3=profit_loss()
             pl3.details = billed.vendor_name
             pl3.cid = cmp1
+            pl3.acctype = "Cost of Goods Sold"
             pl3.transactions = "Billed"
             pl3.accname = "Cost of Goods Sold"
             pl3.pbill = billed
             pl3.details1 = billed.bill_no
             pl3.details2 = reference
             pl3.date = billed.date
-            pl3.payments = billed.grand_total
+            pl3.payments = billed.sub_total
             pl3.save()
 
             bs3=balance_sheet()
             bs3.details = billed.vendor_name
             bs3.cid = cmp1
+            bs3.acctype = "Accounts Payable(Creditors)"
             bs3.transactions = "Billed"
             bs3.account = "Accounts Payable(Creditors)"
             bs3.bill = billed
@@ -31598,6 +31680,7 @@ def createbill(request):
                 bs4=balance_sheet()
                 bs4.details = billed.vendor_name
                 bs4.cid = cmp1
+                bs4.acctype = "Current Assets"
                 bs4.transactions = "Billed"
                 bs4.account = "Input CGST"
                 bs4.bill = billed
@@ -31610,6 +31693,7 @@ def createbill(request):
                 bs5=balance_sheet()
                 bs5.details = billed.vendor_name
                 bs5.cid = cmp1
+                bs5.acctype = "Current Assets"
                 bs5.transactions = "Billed"
                 bs5.account = "Input SGST"
                 bs5.bill = billed
@@ -31622,6 +31706,7 @@ def createbill(request):
                 bs6=balance_sheet()
                 bs6.details = billed.vendor_name
                 bs6.cid = cmp1
+                bs6.acctype = "Current Assets"
                 bs6.transactions = "Billed"
                 bs6.account = "Input IGST"
                 bs6.bill = billed
@@ -31634,6 +31719,7 @@ def createbill(request):
             bs7=balance_sheet()
             bs7.details = billed.vendor_name
             bs7.cid = cmp1
+            bs7.acctype = "Current Liabilities"
             bs7.transactions = "Billed"
             bs7.account = "TDS Payable"
             bs7.bill = billed
@@ -31665,18 +31751,18 @@ def createbill(request):
             if sourceofsupply == cmp1.state:
                 cgst = float(request.POST['cgst'])
                 accocgst = accounts1.objects.get(
-                    name='Output CGST', cid=cmp1)
+                    name='Input CGST', cid=cmp1)
                 accocgst.balance = round(float(accocgst.balance - cgst), 2)
                 accocgst.save()
                 sgst = float(request.POST['sgst'])
                 accosgst = accounts1.objects.get(
-                    name='Output SGST', cid=cmp1)
+                    name='Input SGST', cid=cmp1)
                 accosgst.balance = round(float(accosgst.balance - sgst), 2)
                 accosgst.save()
             else:
                 igst = float(request.POST['igst'])
                 accoigst = accounts1.objects.get(
-                    name='Output IGST', cid=cmp1)
+                    name='Input IGST', cid=cmp1)
                 accoigst.balance = round(
                     float(accoigst.balance - igst), 2)
                 accoigst.save()
@@ -31851,12 +31937,13 @@ def editpurchasebill(request,id):
             pl3.details1 = pbill.bill_no
             pl3.details2 = pbill.reference
             pl3.date = pbill.date
-            pl3.payments = pbill.grand_total
+            pl3.payments = pbill.sub_total
             pl3.save()
 
             bs3=balance_sheet.objects.get(cid=cmp1,bill=pbill)
             bs3.details = pbill.vendor_name
             bs3.cid = cmp1
+            bs3.acctype = "Current Assets"
             bs3.transactions = "Billed"
             bs3.account = "Accounts Payable(Creditors)"
             bs3.bill = pbill
@@ -31871,6 +31958,7 @@ def editpurchasebill(request,id):
                 bs4=balance_sheet.objects.get(cid=cmp1,bill=pbill)
                 bs4.details = pbill.vendor_name
                 bs4.cid = cmp1
+                bs4.acctype = "Current Assets"
                 bs4.transactions = "Billed"
                 bs4.account = "Input CGST"
                 bs4.bill = pbill
@@ -31883,6 +31971,7 @@ def editpurchasebill(request,id):
                 bs5=balance_sheet.objects.get(cid=cmp1,bill=pbill)
                 bs5.details = pbill.vendor_name
                 bs5.cid = cmp1
+                bs5.acctype = "Current Assets"
                 bs5.transactions = "Billed"
                 bs5.account = "Input SGST"
                 bs5.bill = pbill
@@ -31895,6 +31984,7 @@ def editpurchasebill(request,id):
                 bs6=balance_sheet.objects.get(cid=cmp1,bill=pbill)
                 bs6.details = pbill.vendor_name
                 bs6.cid = cmp1
+                bs6.acctype = "Current Assets"
                 bs6.transactions = "Billed"
                 bs6.account = "Input IGST"
                 bs6.bill = pbill
@@ -31907,6 +31997,7 @@ def editpurchasebill(request,id):
             bs7=balance_sheet.objects.get(cid=cmp1,bill=pbill)
             bs7.details = pbill.vendor_name
             bs7.cid = cmp1
+            bs5.acctype = "Current Liabilities"
             bs7.transactions = "Billed"
             bs7.account = "TDS Payable"
             bs7.bill = pbill
@@ -32056,7 +32147,7 @@ def addexpenses(request):
         cmp1 = company.objects.get(id=request.session['uid'])
         vndr = vendor.objects.all()
         cust = customer.objects.all()
-        acc = accounts1.objects.filter(cid=cmp1)
+        acc = accounts1.objects.filter(cid=cmp1,acctype='Expenses')
         context = {'cmp1': cmp1, 'vndr': vndr, 'cust': cust,'acc':acc}
         return render(request,'app1/addexpense.html',context)
     return redirect('/') 
@@ -32327,8 +32418,9 @@ def getbilldata(request):
         id = request.POST['select']
         print (id)
         billitm = purchasebill.objects.values().filter(vendor_name=id)
-        x_data = list(billitm)
-        return JsonResponse({"status":" not","billitm":x_data})
+        vndr = vendor.objects.values().filter(firstname=id)
+        x_data = list(billitm,vndr)
+        return JsonResponse({"status":" not","billitm,vndr":x_data})
 
 def gopurchasepymnt(request):
     if 'uid' in request.session:
@@ -32389,7 +32481,6 @@ def createpurchasepymnt(request):
             bs3.transactions = "Vendor Payment"
             bs3.account ="Accounts Payable(Creditors)"
             bs3.pymnt = pymnt1
-            bs3.details0 = pymnt1.depositeto
             bs3.details1 = pymnt1.pymntid
             bs3.details2 = pymnt1.reference
             bs3.date = pymnt1.paymentdate
@@ -32403,7 +32494,7 @@ def createpurchasepymnt(request):
             bs3.account = pymnt1.depositeto
             bs3.pymnt = pymnt1
             bs3.details1 = pymnt1.pymntid
-            bs3.details2 = reference
+            bs3.details2 = pymnt1.reference
             bs3.date = pymnt1.paymentdate
             bs3.payments = pymnt1.paymentamount
             bs3.save()
@@ -33402,6 +33493,24 @@ def accpayment(request):
     account.save()
                 
     return redirect('paymentindex')
+
+def trial_balance(request):
+    if 'uid' in request.session:
+        if request.session.has_key('uid'):
+            uid = request.session['uid']
+        else:
+            return redirect('/')
+        cmp1 = company.objects.get(id=request.session['uid'])
+        ar=balance_sheet.objects.filter(cid=cmp1,acctype='Account Receivable(Debtors)')
+        ca=balance_sheet.objects.filter(cid=cmp1,acctype='Current Assets')
+        cl=balance_sheet.objects.filter(cid=cmp1,acctype='Current Liabilities')
+        ap=balance_sheet.objects.filter(cid=cmp1,acctype='Accounts Payable(Creditors)')
+        incm=profit_loss.objects.filter(cid=cmp1,acctype='Income')
+        cogs=profit_loss.objects.filter(cid=cmp1,acctype='Cost Of Goods Sold')
+        expc=profit_loss.objects.filter(cid=cmp1,acctype='Expenses')
+        context = {'cmp1':cmp1, 'ar':ar, 'cs':ca, 'cl':cl, 'ap':ap, 'cogs':cogs, 'expc':expc}
+        return render(request,'app1/trial_balance.html',context)
+    return redirect('/') 
 
 def trial(request):
     tr=accounts1.objects.filter(acctype='Current Assets')
