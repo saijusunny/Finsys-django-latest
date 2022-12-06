@@ -338,7 +338,7 @@ class invoice(models.Model):
     # taxamount = models.IntegerField(default=0, null=True)
     baldue = models.FloatField()
     subtotal = models.IntegerField(default=0, null=True)
-    grandtotal = models.IntegerField(default=0, null=True)
+    grandtotal = models.FloatField(default=0, null=True)
     invoice_orderno = models.CharField(max_length=255, default='', null=True)
 
     
@@ -1356,6 +1356,7 @@ class vendor(models.Model):
 
 class purchaseorder(models.Model):
     porderid = models.AutoField(('pid'), primary_key=True)
+    cid = models.ForeignKey(company, on_delete=models.CASCADE,null=True)
     vendor_name = models.CharField(max_length=100,null=True)
     billing_address = models.TextField(null=True)
     puchaseorder_no = models.IntegerField(default=1000)
@@ -1393,6 +1394,7 @@ class purchaseorder(models.Model):
 
 class purchaseorder_item(models.Model):
     porder = models.ForeignKey(purchaseorder, on_delete=models.CASCADE,null=True)
+    cid = models.ForeignKey(company, on_delete=models.CASCADE,null=True)
     items = models.CharField(max_length=100,null=True)
     hsn = models.CharField(max_length=100,null=True)
     quantity = models.CharField(max_length=100,null=True)
@@ -1422,10 +1424,10 @@ class purchasebill(models.Model):
     igst = models.CharField(max_length=100,null=True)
     discount = models.CharField(max_length=100,default=0)
     tcs = models.CharField(max_length=100,null=True)
-    tcs_amount = models.CharField(max_length=100,null=True)
+    tcs_amount = models.FloatField(blank=True,null=True)
     round_off = models.CharField(max_length=100,null=True)
     tax_amount = models.CharField(max_length=100,null=True)
-    grand_total = models.IntegerField(null=True)
+    grand_total = models.FloatField(blank=True,null=True)
     balance_due = models.CharField(max_length=100,null=True)
     amtrecvd = models.CharField(max_length=100,null=True)
     note = models.CharField(max_length=255,null=True)
@@ -1448,6 +1450,7 @@ class purchasebill_item(models.Model):
     amount = models.CharField(max_length=100,null=True)
 
 class purchase_expense(models.Model):
+    cid = models.ForeignKey(company, on_delete=models.CASCADE,null=True)
     expenseid = models.AutoField(('eid'), primary_key=True)
     expense_no = models.IntegerField(default=1000)
     date = models.DateField(null=True)
@@ -1472,9 +1475,11 @@ class expense2(models.Model):
 
 class creditperiod(models.Model):
     newperiod = models.IntegerField(null=True)
+    cid = models.ForeignKey(company, on_delete=models.CASCADE,null=True)
 
 class purchasepayment(models.Model):
     pymntid = models.AutoField(('pyid'), primary_key=True)
+    cid = models.ForeignKey(company, on_delete=models.CASCADE,null=True)
     reference = models.IntegerField(default=1000)
     vendor = models.CharField(max_length=100)
     paymentdate = models.DateField(null=True)
@@ -1486,6 +1491,7 @@ class purchasepayment(models.Model):
 
 class purchasepayment1(models.Model):
     pymnt = models.ForeignKey(purchasepayment, on_delete=models.CASCADE,null=True)
+    cid = models.ForeignKey(company, on_delete=models.CASCADE,null=True)
     billdate = models.DateField(null=True)
     billno = models.CharField(max_length=100,null=True)
     billamount = models.CharField(max_length=100,null=True)
@@ -1494,6 +1500,7 @@ class purchasepayment1(models.Model):
     payments = models.CharField(max_length=100,null=True)
     
 class paymentmethod(models.Model):
+    cid = models.ForeignKey(company, on_delete=models.CASCADE,null=True)
     newmethod = models.CharField(max_length=100,null=True) 
 
 class purchasedebit(models.Model):
@@ -1515,6 +1522,7 @@ class purchasedebit(models.Model):
 
 class purchasedebit1(models.Model):
     pdebit = models.ForeignKey(purchasedebit, on_delete=models.CASCADE,null=True)
+    cid = models.ForeignKey(company, on_delete=models.CASCADE,null=True)
     items = models.CharField(max_length=100,null=True)
     hsn = models.CharField(max_length=100,null=True)
     quantity = models.IntegerField(null=True)
@@ -1549,9 +1557,7 @@ class profit_loss(models.Model):
     details0 = models.CharField(max_length=255, null=True)
     details1 = models.CharField(max_length=255,blank=True,null=True)
     details2= models.CharField(max_length=255,blank=True,default='')
-    amount = models.FloatField(blank=True,null=True)
-    balance	= models.FloatField(blank=True,null=True)
-    payments=models.IntegerField(blank=True,null=True)	
+    payments=models.FloatField(blank=True,null=True)	
 
 class balance_sheet(models.Model):
     cid = models.ForeignKey(company, on_delete=models.CASCADE,null=True)

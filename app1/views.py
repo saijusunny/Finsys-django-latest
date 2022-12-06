@@ -3366,6 +3366,7 @@ def invcreate2(request):
         pl3=profit_loss()
         pl3.details = inv2.customername
         pl3.cid = cmp1
+        pl3.acctype = "Income"
         pl3.transactions = "Invoice"
         pl3.accname = "Sales"
         pl3.inv = inv2
@@ -3377,6 +3378,7 @@ def invcreate2(request):
         bs3=balance_sheet()
         bs3.details = inv2.customername
         bs3.cid = cmp1
+        bs3.acctype = "Account Receivable(Debtors)"
         bs3.transactions = "Invoice"
         bs3.account = "Account Receivable(Debtors)"
         bs3.invc = inv2
@@ -3391,6 +3393,7 @@ def invcreate2(request):
             bs4=balance_sheet()
             bs4.details = inv2.customername
             bs4.cid = cmp1
+            bs4.acctype = "Current Liabilities"
             bs4.transactions = "Invoice"
             bs4.account = "Output CGST"
             bs4.invc = inv2
@@ -3403,6 +3406,7 @@ def invcreate2(request):
             bs5=balance_sheet()
             bs5.details = inv2.customername
             bs5.cid = cmp1
+            bs5.acctype = "Current Liabilities"
             bs5.transactions = "Invoice"
             bs5.account = "Output SGST"
             bs5.invc = inv2
@@ -3415,6 +3419,7 @@ def invcreate2(request):
             bs6=balance_sheet()
             bs6.details = inv2.customername
             bs6.cid = cmp1
+            bs6.acctype = "Current Liabilities"
             bs6.transactions = "Invoice"
             bs6.account = "Output IGST"
             bs6.invc = inv2
@@ -3427,6 +3432,7 @@ def invcreate2(request):
         bs7=balance_sheet()
         bs7.details = inv2.customername
         bs7.cid = cmp1
+        bs7.acctype = "Current Assets"
         bs7.transactions = "Invoice"
         bs7.account = "TDS Receivable"
         bs7.invc = inv2
@@ -3459,27 +3465,27 @@ def invcreate2(request):
         if placosupply == cmp1.state:
             CGST = float(request.POST['CGST'])
             accocgst = accounts1.objects.get(
-                name='Input CGST', cid=cmp1)
+                name='Output CGST', cid=cmp1)
             accocgst.balance = round(float(accocgst.balance + CGST), 2)
             accocgst.save()
             SGST = float(request.POST['SGST'])
             accosgst = accounts1.objects.get(
-                name='Input SGST', cid=cmp1)
+                name='Output SGST', cid=cmp1)
             accosgst.balance = round(float(accosgst.balance + SGST), 2)
             accosgst.save()
         else:
             IGST = float(request.POST['IGST'])
             accoigst = accounts1.objects.get(
-                name='Input IGST', cid=cmp1)
+                name='Output IGST', cid=cmp1)
             accoigst.balance = round(
                 float(accoigst.balance + IGST), 2)
             accoigst.save()
 
-        # tcs_amount = float(request.POST['tcs_amount'])
-        # accont = accounts1.objects.get(
-        #     name='TDS Payable',cid=cmp1)
-        # accont.balance = accont.balance - tcs_amount
-        # accont.save()
+        TCS = float(request.POST['TCS'])
+        accont = accounts1.objects.get(
+            name='TDS Receivable',cid=cmp1)
+        accont.balance = accont.balance - TCS
+        accont.save()
 
         product = request.POST.getlist("product[]")
         hsn  = request.POST.getlist("hsn[]")
@@ -27704,6 +27710,74 @@ def updateinvoice2(request, id):
 
         invoi.save()
 
+        pl3=profit_loss.objects.get(cid=cmp1,inv=invoi)
+        pl3.details = invoi.customername
+        pl3.cid = cmp1
+        pl3.acctype = "Income"
+        pl3.transactions = "Invoice"
+        pl3.accname = "Sales"
+        pl3.date = invoi.invoicedate
+        pl3.payments = invoi.subtotal
+        pl3.save()
+
+        bs3=balance_sheet.objects.get(cid=cmp1,invc=invoi,account='Account Receivable(Debtors)')
+        bs3.details = invoi.customername
+        bs3.cid = cmp1
+        bs3.acctype = "Account Receivable(Debtors)"
+        bs3.transactions = "Invoice"
+        bs3.account = "Account Receivable(Debtors)"
+        bs3.invc = invoi
+        bs3.date = invoi.invoicedate
+        bs3.payments = invoi.grandtotal
+        bs3.save()
+
+        placosupply=request.POST['placosupply']
+        if placosupply == cmp1.state:
+            bs4=balance_sheet.objects.get(cid=cmp1,invc=invoi,account='Output CGST')
+            bs4.details = invoi.customername
+            bs4.cid = cmp1
+            bs4.acctype = "Current Liabilities"
+            bs4.transactions = "Invoice"
+            bs4.account = "Output CGST"
+            bs4.invc = invoi
+            bs4.date = invoi.invoicedate
+            bs4.payments = invoi.CGST
+            bs4.save()
+
+            bs5=balance_sheet.objects.get(cid=cmp1,invc=invoi,account='Output SGST')
+            bs5.details = invoi.customername
+            bs5.cid = cmp1
+            bs5.acctype = "Current Liabilities"
+            bs5.transactions = "Invoice"
+            bs5.account = "Output SGST"
+            bs5.invc = invoi
+            bs5.date = invoi.invoicedate
+            bs5.payments = invoi.SGST
+            bs5.save()
+        else:
+            bs6=balance_sheet.objects.get(cid=cmp1,invc=invoi,account='Output IGST')
+            bs6.details = invoi.customername
+            bs6.cid = cmp1
+            bs6.acctype = "Current Liabilities"
+            bs6.transactions = "Invoice"
+            bs6.account = "Output IGST"
+            bs6.invc = invoi
+            bs6.date = invoi.invoicedate
+            bs6.payments = invoi.IGST
+            bs6.save()
+            
+        bs7=balance_sheet.objects.get(cid=cmp1,invc=invoi,account='TDS Receivable')
+        bs7.details = invoi.customername
+        bs7.cid = cmp1
+        bs7.acctype = "Current Assets"
+        bs7.transactions = "Invoice"
+        bs7.account = "TDS Receivable"
+        bs7.invc = invoi
+        bs7.date = invoi.invoicedate
+        bs7.payments = invoi.TCS
+        bs7.save()
+
+
         product = request.POST.getlist("product[]")
         hsn  = request.POST.getlist("hsn[]")
         description = request.POST.getlist("description[]")
@@ -27773,7 +27847,11 @@ def deleteinvoice(request, id):
     try:
         cmp1 = company.objects.get(id=request.session['uid'])
         inoi = invoice.objects.get(invoiceid=id, cid=cmp1)
+        bls = balance_sheet.objects.all().filter(invc=id)
+        pl = profit_loss.objects.all().filter(inv=id)
         inoi.delete()
+        bls.delete()
+        pl.delete()
         return redirect('goinvoices')
     except:
         return redirect('goinvoices')
@@ -31230,16 +31308,20 @@ def addpurchaseorder(request):
         else:
             return redirect('/')
         cmp1 = company.objects.get(id=request.session['uid'])
-        vndr = vendor.objects.all()
-        itm = itemtable.objects.all()
-        cpd = creditperiod.objects.all()
-        cust = customer.objects.all()
+        vndr = vendor.objects.filter(cid=cmp1)
+        itm = itemtable.objects.filter(cid=cmp1)
+        cust = customer.objects.filter(cid=cmp1)
+        cpd = creditperiod.objects.filter(cid=cmp1)
+        acc2 = accounts1.objects.filter(cid=cmp1,name='Sales')
+        acc1 = accounts1.objects.filter(cid=cmp1,acctype='Cost of Goods Sold')
         context = {
                     'cmp1': cmp1,
                     'vndr':vndr,
                     'item':itm ,
-                    'cust':cust,         
-                    'cpd':cpd,         
+                    'cust':cust,        
+                    'cpd':cpd ,
+                    'acc1':acc1,    
+                    'acc2':acc2      
                 }
         return render(request,'app1/addpurchaseorder.html',context)
     return redirect('addpurchaseorder')
@@ -31309,7 +31391,7 @@ def createpurchaseorder(request):
                 mapped=list(mapped)
                 for ele in mapped:
                     porderAdd,created = purchaseorder_item.objects.get_or_create(items = ele[0],hsn = ele[1],quantity=ele[2],rate=ele[3],
-                    tax=ele[4],amount=ele[5],porder=prid)
+                    tax=ele[4],amount=ele[5],porder=prid,cid=cmp1)
 
                     itemqty = itemtable.objects.get(name=ele[0],cid=cmp1)
                     if itemqty.stock != 0:
@@ -31484,7 +31566,7 @@ def convertbilled(request,id):
         upd.date = pordr.date
         upd.destiofsupply= pordr.destiofsupply
         upd.branch= pordr.branch
-        upd.reference= pordr.reference
+        upd.reference= pordr.puchaseorder_no
         upd.contact_name= pordr.contact_name
         upd.deliverto= pordr.deliverto
         upd.deliver_date= pordr.deliver_date
@@ -31503,7 +31585,6 @@ def convertbilled(request,id):
         upd.balance_due= pordr.balance_due
         upd.note= pordr.note
         upd.file= pordr.file
-        upd.status= pordr.status
         
         upd.bill_no = '1000'
 
@@ -31540,17 +31621,17 @@ def convertbilled(request,id):
 
 def porder_draft(request):
     cmp1 = company.objects.get(id=request.session["uid"])
-    pordr = purchaseorder.objects.filter(status='Draft').all()
+    pordr = purchaseorder.objects.filter(cid=cmp1,status='Draft').all()
     return render(request,'app1/gopurchaseorder.html',{'cmp1':cmp1,'pordr':pordr})
 
 def porder_billed(request):
     cmp1 = company.objects.get(id=request.session["uid"])
-    pordr = purchaseorder.objects.filter(status='Billed').all()
+    pordr = purchaseorder.objects.filter(cid=cmp1,status='Billed').all()
     return render(request,'app1/gopurchaseorder.html',{'cmp1':cmp1,'pordr':pordr})
 
 def porder_approved(request):
     cmp1 = company.objects.get(id=request.session["uid"])
-    pordr = purchaseorder.objects.filter(status='Approved').all()
+    pordr = purchaseorder.objects.filter(cid=cmp1,status='Approved').all()
     return render(request,'app1/gopurchaseorder.html',{'cmp1':cmp1,'pordr':pordr})
 
 @login_required(login_url='regcomp')
@@ -31561,7 +31642,7 @@ def gobilling(request):
         else:
             return redirect('/')
         cmp1 = company.objects.get(id=request.session['uid'])
-        pbill = purchasebill.objects.all()
+        pbill = purchasebill.objects.filter(cid=cmp1)
         return render(request,'app1/gobilling.html',{'cmp1': cmp1,'pbill':pbill})
     return redirect('gobilling')
     
@@ -31573,16 +31654,20 @@ def addbilling(request):
         else:
             return redirect('/')
         cmp1 = company.objects.get(id=request.session['uid'])
-        vndr = vendor.objects.all()
-        itm = itemtable.objects.all()
-        cust = customer.objects.all()
-        cpd = creditperiod.objects.all()
+        vndr = vendor.objects.filter(cid=cmp1)
+        itm = itemtable.objects.filter(cid=cmp1)
+        cust = customer.objects.filter(cid=cmp1)
+        cpd = creditperiod.objects.filter(cid=cmp1)
+        acc2 = accounts1.objects.filter(cid=cmp1,name='Sales')
+        acc1 = accounts1.objects.filter(cid=cmp1,acctype='Cost of Goods Sold')
         context = {
                     'cmp1': cmp1,
                     'vndr':vndr,
                     'item':itm ,
                     'cust':cust,        
-                    'cpd':cpd        
+                    'cpd':cpd ,
+                    'acc1':acc1,    
+                    'acc2':acc2      
                 }
         return render(request,'app1/addbilling.html',context)
     return redirect('addbilling')
@@ -31787,7 +31872,7 @@ def createbill(request):
                 mapped=list(mapped)
                 for ele in mapped:
                     billAdd,created = purchasebill_item.objects.get_or_create(items = ele[0],hsn = ele[1],quantity=ele[2],rate=ele[3],
-                    tax=ele[4],amount=ele[5],bill=bll)
+                    tax=ele[4],amount=ele[5],bill=bll,cid=cmp1)
 
                     itemqty = itemtable.objects.get(name=ele[0],cid=cmp1)
                     if itemqty.stock != 0:
@@ -31859,9 +31944,9 @@ def goeditbill(request,id):
         cmp1 = company.objects.get(id=request.session['uid'])
         pbill=purchasebill.objects.get(billid=id)
         bitem = purchasebill_item.objects.all().filter(bill=id)
-        vndr = vendor.objects.all()
-        itm = itemtable.objects.all()
-        cust = customer.objects.all()
+        vndr = vendor.objects.filter(cid=cmp1)
+        itm = itemtable.objects.filter(cid=cmp1)
+        cust = customer.objects.filter(cid=cmp1)
         context = {
                     'cmp1': cmp1,
                     'vndr':vndr,
@@ -31931,6 +32016,7 @@ def editpurchasebill(request,id):
             pl3=profit_loss.objects.get(cid=cmp1,pbill=pbill)
             pl3.details = pbill.vendor_name
             pl3.cid = cmp1
+            acctype = "Cost of Goods Sold"
             pl3.transactions = "Billed"
             pl3.accname = "Cost of Goods Sold"
             pl3.pbill = pbill
@@ -31940,10 +32026,10 @@ def editpurchasebill(request,id):
             pl3.payments = pbill.sub_total
             pl3.save()
 
-            bs3=balance_sheet.objects.get(cid=cmp1,bill=pbill)
+            bs3=balance_sheet.objects.get(cid=cmp1,bill=pbill,account='Accounts Payable(Creditors)')
             bs3.details = pbill.vendor_name
             bs3.cid = cmp1
-            bs3.acctype = "Current Assets"
+            bs3.acctype = "Accounts Payable(Creditors)"
             bs3.transactions = "Billed"
             bs3.account = "Accounts Payable(Creditors)"
             bs3.bill = pbill
@@ -31955,7 +32041,7 @@ def editpurchasebill(request,id):
 
             sourceofsupply=request.POST['sourceofsupply']
             if sourceofsupply == cmp1.state:
-                bs4=balance_sheet.objects.get(cid=cmp1,bill=pbill)
+                bs4=balance_sheet.objects.get(cid=cmp1,bill=pbill,account='Input CGST')
                 bs4.details = pbill.vendor_name
                 bs4.cid = cmp1
                 bs4.acctype = "Current Assets"
@@ -31968,7 +32054,7 @@ def editpurchasebill(request,id):
                 bs4.payments = pbill.cgst
                 bs4.save()
 
-                bs5=balance_sheet.objects.get(cid=cmp1,bill=pbill)
+                bs5=balance_sheet.objects.get(cid=cmp1,bill=pbill,account='Input SGST')
                 bs5.details = pbill.vendor_name
                 bs5.cid = cmp1
                 bs5.acctype = "Current Assets"
@@ -31981,7 +32067,7 @@ def editpurchasebill(request,id):
                 bs5.payments = pbill.sgst
                 bs5.save()
             else:
-                bs6=balance_sheet.objects.get(cid=cmp1,bill=pbill)
+                bs6=balance_sheet.objects.get(cid=cmp1,bill=pbill,account='Input IGST')
                 bs6.details = pbill.vendor_name
                 bs6.cid = cmp1
                 bs6.acctype = "Current Assets"
@@ -31994,10 +32080,10 @@ def editpurchasebill(request,id):
                 bs6.payments = pbill.igst
                 bs6.save()
             
-            bs7=balance_sheet.objects.get(cid=cmp1,bill=pbill)
+            bs7=balance_sheet.objects.get(cid=cmp1,bill=pbill,account='TDS Payable')
             bs7.details = pbill.vendor_name
             bs7.cid = cmp1
-            bs5.acctype = "Current Liabilities"
+            bs7.acctype = "Current Liabilities"
             bs7.transactions = "Billed"
             bs7.account = "TDS Payable"
             bs7.bill = pbill
@@ -32016,7 +32102,7 @@ def editpurchasebill(request,id):
 
             bitmid = request.POST.getlist("id[]")
 
-            billid=purchasebill.objects.get(billid=pbill.billid)
+            billid=purchasebill.objects.get(billid=pbill.billid,cid=cmp1)
 
             if len(items)==len(hsn)==len(quantity)==len(rate)==len(tax)==len(amount)==len(bitmid) and items and hsn and quantity and rate and tax and amount and bitmid:
                 mapped=zip(items,hsn,quantity,rate,tax,amount,bitmid)
@@ -32134,7 +32220,7 @@ def goexpenses(request):
         else:
             return redirect('/')
         cmp1 = company.objects.get(id=request.session['uid'])
-        expnc = purchase_expense.objects.all()
+        expnc = purchase_expense.objects.filter(cid=cmp1)
         return render(request,'app1/goexpenses.html',{'cmp1': cmp1,'expnc':expnc})
     return redirect('/') 
 
@@ -32145,10 +32231,11 @@ def addexpenses(request):
         else:
             return redirect('/')
         cmp1 = company.objects.get(id=request.session['uid'])
-        vndr = vendor.objects.all()
-        cust = customer.objects.all()
+        vndr = vendor.objects.filter(cid=cmp1)
+        cust = customer.objects.filter(cid=cmp1)
         acc = accounts1.objects.filter(cid=cmp1,acctype='Expenses')
-        context = {'cmp1': cmp1, 'vndr': vndr, 'cust': cust,'acc':acc}
+        acc1 = accounts1.objects.filter(cid=cmp1,acctype='Cash')
+        context = {'cmp1': cmp1, 'vndr': vndr, 'cust': cust,'acc':acc,'acc1':acc1}
         return render(request,'app1/addexpense.html',context)
     return redirect('/') 
 
@@ -32215,6 +32302,7 @@ def createexpense(request):
             pl3=profit_loss()
             pl3.details = exp.vendor
             pl3.cid = cmp1
+            pl3.acctype = "Expense"
             pl3.transactions = "Expense"
             pl3.accname = exp.expenseaccount
             pl3.expnc = exp
@@ -32228,6 +32316,7 @@ def createexpense(request):
             bs3=balance_sheet()
             bs3.details = exp.vendor
             bs3.cid = cmp1
+            bs3.acctype = "Current Asset"
             bs3.transactions = "Expense"
             bs3.account = exp.paidthrough
             bs3.accname = exp.expenseaccount
@@ -32320,6 +32409,7 @@ def editexpense(request,id):
             pl3=profit_loss.objects.get(cid=cmp1,expnc=expnce)
             pl3.details = expnce.vendor
             pl3.cid = cmp1
+            pl3.acctype = "Expense"
             pl3.transactions = "Expense"
             pl3.accname = expnce.expenseaccount
             pl3.expnc = expnce
@@ -32333,6 +32423,7 @@ def editexpense(request,id):
             bs3=balance_sheet.objects.get(cid=cmp1,expnc=expnce)
             bs3.details = expnce.vendor
             bs3.cid = cmp1
+            bs3.acctype = "Current Asset"
             bs3.transactions = "Expense"
             bs3.account = expnce.paidthrough
             bs3.accname = expnce.expenseaccount
@@ -32418,9 +32509,8 @@ def getbilldata(request):
         id = request.POST['select']
         print (id)
         billitm = purchasebill.objects.values().filter(vendor_name=id)
-        vndr = vendor.objects.values().filter(firstname=id)
         x_data = list(billitm,vndr)
-        return JsonResponse({"status":" not","billitm,vndr":x_data})
+        return JsonResponse({"status":" not","billitm":x_data})
 
 def gopurchasepymnt(request):
     if 'uid' in request.session:
@@ -32429,7 +32519,7 @@ def gopurchasepymnt(request):
         else:
             return redirect('/')
         cmp1 = company.objects.get(id=request.session['uid'])
-        py = purchasepayment.objects.all()
+        py = purchasepayment.objects.filter(cid=cmp1)
         return render(request,'app1/gopurchasepymnt.html',{'cmp1': cmp1,'py':py})
     return redirect('/') 
 
@@ -32441,8 +32531,8 @@ def addpurchasepymnt(request):
         else:
             return redirect('/')
         cmp1 = company.objects.get(id=request.session['uid'])
-        vndr = vendor.objects.all()  
-        pymt = paymentmethod.objects.all()  
+        vndr = vendor.objects.filter(cid=cmp1)
+        pymt = paymentmethod.objects.filter(cid=cmp1)
         return render(request,'app1/addpurchasepymnt.html',{'cmp1':cmp1,'vndr':vndr,'pymt':pymt})
     return redirect('/')
 
@@ -32513,7 +32603,7 @@ def createpurchasepymnt(request):
                 mapped=list(mapped)
                 for ele in mapped:
                     billAdd,created = purchasepayment1.objects.get_or_create(billdate = ele[0],billno=ele[1],billamount=ele[2],
-                    duedate=ele[3],amountdue=ele[4],payments=ele[5],pymnt=pyitm)
+                    duedate=ele[3],amountdue=ele[4],payments=ele[5],pymnt=pyitm,cid=cmp1)
 
             paymentamount = float(request.POST['paymentamount'])
             accont = accounts1.objects.get(
@@ -32709,7 +32799,7 @@ def gopurchasedebit(request):
         else:
             return redirect('/')
         cmp1 = company.objects.get(id=request.session['uid'])
-        pdebit = purchasedebit.objects.all()  
+        pdebit = purchasedebit.objects.filter(cid=cmp1)
         return render(request,'app1/gopurchasedebit.html',{'cmp1': cmp1,'pdebit':pdebit})
     return redirect('gopurchasedebit') 
 
@@ -32720,9 +32810,9 @@ def addpurchasedebit(request):
         else:
             return redirect('/')
         cmp1 = company.objects.get(id=request.session['uid'])
-        vndr = vendor.objects.all()  
-        pbill = purchasebill.objects.all()  
-        item = itemtable.objects.all() 
+        vndr = vendor.objects.filter(cid=cmp1)  
+        pbill = purchasebill.objects.filter(cid=cmp1)
+        item = itemtable.objects.filter(cid=cmp1)
         context = {'cmp1': cmp1,'vndr':vndr,'item':item,'pbill':pbill} 
         return render(request,'app1/addpurchasedebit.html',context)
     return redirect('gopurchasedebit') 
@@ -32886,7 +32976,7 @@ def createpurchasedebit(request):
                 mapped=list(mapped)
                 for ele in mapped:
                     porderAdd,created = purchasedebit1.objects.get_or_create(items = ele[0],hsn=ele[1],quantity=ele[2],price=ele[3],
-                    tax=ele[4],total=ele[5],pdebit=pdeb)
+                    tax=ele[4],total=ele[5],pdebit=pdeb,cid=cmp1)
 
                     itemqty = itemtable.objects.get(name=ele[0],cid=cmp1)
                     if itemqty.stock != 0:
@@ -33502,13 +33592,83 @@ def trial_balance(request):
             return redirect('/')
         cmp1 = company.objects.get(id=request.session['uid'])
         ar=balance_sheet.objects.filter(cid=cmp1,acctype='Account Receivable(Debtors)')
-        ca=balance_sheet.objects.filter(cid=cmp1,acctype='Current Assets')
-        cl=balance_sheet.objects.filter(cid=cmp1,acctype='Current Liabilities')
-        ap=balance_sheet.objects.filter(cid=cmp1,acctype='Accounts Payable(Creditors)')
-        incm=profit_loss.objects.filter(cid=cmp1,acctype='Income')
-        cogs=profit_loss.objects.filter(cid=cmp1,acctype='Cost Of Goods Sold')
-        expc=profit_loss.objects.filter(cid=cmp1,acctype='Expenses')
-        context = {'cmp1':cmp1, 'ar':ar, 'cs':ca, 'cl':cl, 'ap':ap, 'cogs':cogs, 'expc':expc}
+        cas=balance_sheet.objects.filter(cid=cmp1,acctype='Current Assets').values('account').annotate(t1=Sum('payments'))
+        ca=balance_sheet.objects.filter(cid=cmp1,acctype='Current Asset').values('account').annotate(t1=Sum('payments'))
+        cl=balance_sheet.objects.filter(cid=cmp1,acctype='Current Liabilities').values('account').annotate(t2=Sum('payments'))
+        ap=balance_sheet.objects.filter(cid=cmp1,acctype='Accounts Payable(Creditors)').values('account').annotate(t1=Sum('payments'))
+        incm=profit_loss.objects.filter(cid=cmp1,acctype='Income').values('accname').annotate(t3=Sum('payments'))
+        cogs=profit_loss.objects.filter(cid=cmp1,acctype='Cost Of Goods Sold').values('accname').annotate(t3=Sum('payments'))
+        expc=profit_loss.objects.filter(cid=cmp1,acctype='Expense').values('accname').annotate(t4=Sum('payments'))
+
+        ar1=balance_sheet.objects.filter(cid=cmp1,acctype='Account Receivable(Debtors)')
+        cas1=balance_sheet.objects.filter(cid=cmp1,acctype='Current Assets')
+        ca1=balance_sheet.objects.filter(cid=cmp1,acctype='Current Asset')
+        cl1=balance_sheet.objects.filter(cid=cmp1,acctype='Current Liabilities')
+        ap1=balance_sheet.objects.filter(cid=cmp1,acctype='Accounts Payable(Creditors)')
+        incm1=profit_loss.objects.filter(cid=cmp1,acctype='Income')
+        cogs1=profit_loss.objects.filter(cid=cmp1,acctype='Cost Of Goods Sold')
+        expc1=profit_loss.objects.filter(cid=cmp1,acctype='Expense')
+
+        t1=0
+        t2=0
+        sum1=0
+
+        for i in cas1:
+            t1+=i.payments
+        for i in ar1:
+            t2+=i.payments
+        
+        sum1=t1+t2
+        print(sum1)
+
+        t3=0
+        t4=0
+        sum2=0
+
+        for i in cl1:
+            t3+=i.payments
+        for i in ap1:
+            t4+=i.payments
+        
+        sum2=t3+t4
+        print(sum2)
+
+        t5=0
+        t6=0
+        sum3=0
+
+        for i in cogs1:
+            t5+=i.payments
+        for i in expc1:
+            t6+=i.payments
+        
+        sum3=t5+t6
+        print(sum3)
+
+        t7=0
+        sum4=0
+        for i in ca1:
+            t7+=i.payments
+
+        sum4=t7
+        print(sum4)
+
+        t8=0
+        sum5=0
+        for i in incm1:
+            t8+=i.payments
+
+        sum5=t8
+        print(sum5)
+
+        sumtot=sum1+sum3
+        print(sumtot)
+        sumtot1=sum2+sum4+sum5
+        print(sumtot1)
+
+
+        context = {'cmp1':cmp1, 'ar':ar, 'cas':cas, 'ca':ca, 'cs':ca, 'cl':cl, 'ap':ap, 
+        'cogs':cogs, 'expc':expc, 'incm':incm,'sumtot':sumtot, 'sumtot1':sumtot1}
         return render(request,'app1/trial_balance.html',context)
     return redirect('/') 
 

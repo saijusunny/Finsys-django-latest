@@ -82,10 +82,8 @@
                             <label for="">Paid Through</label>
                             <select class="form-control" name="paidthrough">
                                 <option disabled>Cash</option>
-                                {% for a in acc %}
-                                    {% if a.acctype == "Cash" %}
-                                        <option value="{{ a.name }}">{{ a.name }}</option>
-                                    {% endif %} 
+                                {% for a in acc1 %}
+                                    <option value="{{ a.name }}">{{ a.name }}</option>
                                 {% endfor %}  
                                 <!-- <option disabled>Bank</option>
                                 {% for a in acc %}

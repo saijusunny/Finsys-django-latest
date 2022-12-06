@@ -358,7 +358,7 @@
                                             </select>
                                         </div>
                                         <div class="col-sm-4 mt-2">
-                                            <input type="number" value="{{ pbill.tcs_amount }}" id="tcs_amount" name='tcs_amount' placeholder='0' class="form-control">
+                                            <input type="text" value="{{ pbill.tcs_amount }}" id="tcs_amount" name='tcs_amount' placeholder='0' class="form-control">
                                         </div>
                                     </div>
                                     <div class="row container-fluid p-2 m-0">
@@ -545,12 +545,13 @@
             var amount =taxamount + total - tcs 
             let x =Math.round(amount)
             let y =Math.round(x-disc0)
+            var gt = amount-disc0
             
-            $('#tcs_amount').val((z).toFixed(2));
+            $('#tcs_amount').val(parseFloat(tcs.toFixed(2)));
             // $('#grandtotal').val((y).toFixed(2));
             // $('#due').val((y).toFixed(2));
             // $('#round_off').val((y).toFixed(2));   
-            $('#grandtotal').val(parseFloat(y.toFixed(2)));
+            $('#grandtotal').val(parseFloat(gt.toFixed(2)));
             $('#due').val(parseFloat(y.toFixed(2)));
             $('#round_off').val(parseFloat(y.toFixed(2)));
 

@@ -72,9 +72,9 @@
             $('#tcs_amount').val(parseFloat((a/100) *total.toFixed(2)));
            
 
-            $('#grandtotal').val(parseFloat((taxamount + total+tcs).toFixed(2)));
+            $('#grandtotal').val(parseFloat((taxamount + total-tcs).toFixed(2)));
 
-            $('#baldue').val(parseFloat((taxamount + total+tcs) .toFixed(2)));
+            $('#baldue').val(parseFloat((taxamount + total-tcs) .toFixed(2)));
 
 
             

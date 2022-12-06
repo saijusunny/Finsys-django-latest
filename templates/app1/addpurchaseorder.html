@@ -97,7 +97,7 @@
                                     <option value="[JK] Jammu and Kashmir">[JK] Jammu and Kashmir</option>
                                     <option value="[JH] Jharkhand">[JH] Jharkhand</option>
                                     <option value="[KA] Karnataka">[KA] Karnataka</option>
-                                    <option value="[KL] Kerala">[KL] Kerala</option>
+                                    <option value="Kerala">[KL] Kerala</option>
                                     <option value="[LA] Ladakh">[LA] Ladakh</option>
                                     <option value="[LD] Lakshadweep">[LD] Lakshadweep</option>
                                     <option value="[MP] Madhya Predesh">[MP] Madhya Predesh</option>
@@ -262,7 +262,7 @@
                                                         {% endfor %}
                                                     </select>
 
-                                                    <a href="#">
+                                                    <a>
                                                         <button type="button" class="btn btn-outline-secondary ml-1" 
                                                         data-target="#newitem" data-toggle="modal">+</button>
                                                     </a>
@@ -272,7 +272,7 @@
                                             <td>
                                                 <input type="number" name='quantity[]' onchange="qtychange1(this)" placeholder='Enter Qty'
                                                 id="qty1" class="form-control qty" step=0 min=0>
-                                                <div class="text-secondary">Available Qty : <span id="qtyspan" class='text-secondary'></span></div>
+                                                <!-- <div class="text-secondary">Available Qty : <span id="qtyspan" class='text-secondary'></span></div> -->
                                             </td> 
                                             <td><input type="number" name='rate[]' id="unit1" placeholder='Enter Rate' 
                                                 class="form-control price" step="0.00" min="0">
@@ -1076,7 +1076,7 @@
                                                     <div class="col-md-12 mt-3">
                                                         <div class="form-row">
                                                             <label for="street">Street</label>
-                                                            <textarea class="form-control street" id="street" name="street"></textarea>
+                                                            <textarea class="form-control street" id="street1" name="street"></textarea>
                                                             <div class="invalid-feedback">Please provide a valid Street</div>
                                                         </div>
                                                     </div>
@@ -1085,14 +1085,14 @@
                                                     <div class="col-md-6 mt-3">
                                                         <div class="form-row">
                                                             <label for="city">City</label>
-                                                            <input type="text" class="form-control" id="city" name="city" placeholder="City">
+                                                            <input type="text" class="form-control" id="city1" name="city" placeholder="City">
                                                             <div class="invalid-feedback">Please provide a valid City</div>
                                                         </div>
                                                     </div>
                                                     <div class="col-md-6 mt-3">
                                                         <div class="form-row">
                                                             <label for="state">State</label>
-                                                            <select type="text" class="form-control" id="state" name="state">
+                                                            <select type="text" class="form-control" id="state1" name="state">
                                                                 <option value="" selected>Choose</option>
                                                                 <option value="Andaman and Nicobar Islads">Andaman and Nicobar Islads
                                                                 </option>
@@ -1142,7 +1142,7 @@
                                                     <div class="col-md-6 mt-3">
                                                         <div class="form-row">
                                                             <label for="pinco">Pin Code</label>
-                                                            <input type="text" class="form-control" id="pinco"
+                                                            <input type="text" class="form-control" id="pinco1"
                                                                    name="pincode"
                                                                    placeholder="PIN code">
                                                             <div class="invalid-feedback">Please provide a valid Pin Code</div>
@@ -1151,7 +1151,7 @@
                                                     <div class="col-md-6 mt-3">
                                                         <div class="form-row">
                                                             <label for="country">Country</label>
-                                                            <input type="text" class="form-control" id="country"
+                                                            <input type="text" class="form-control" id="country1"
                                                                    name="country"
                                                                    placeholder="Country">
                                                             <div class="invalid-feedback">Please provide a valid Country</div>
@@ -1163,16 +1163,16 @@
                                                 <div class="row">
                                                     <div class="col-md-12 d-flex">
                                                         <h5>Shipping Address</h5>
-                                                        <input class="ml-4 mt-2 ml-2" type="checkbox" onclick="poppins()" id="okay"
-                                                               name="okay">
-                                                        <label class="ml-2 mt-1 ml-2" for="okay">Same As Billing Address</label>
+                                                        <input class="ml-4 mt-2 ml-2" type="checkbox" onclick="poppins1()" id="okay1"
+                                                               name="okay1">
+                                                        <label class="ml-2 mt-1 ml-2" for="okay1">Same As Billing Address</label>
                                                     </div>
                                                 </div>
                                                 <div class="row">
                                                     <div class="col-md-12 mt-3">
                                                         <div class="form-row">
                                                             <label for="shipstreet">Street</label>
-                                                            <textarea class="form-control" id="shipstreet" name="shipstreet"></textarea>
+                                                            <textarea class="form-control" id="shipstreet1" name="shipstreet"></textarea>
                                                             <div class="invalid-feedback">Please provide a valid Street</div>
                                                         </div>
                                                     </div>
@@ -1181,7 +1181,7 @@
                                                     <div class="col-md-6 mt-3">
                                                         <div class="form-row">
                                                             <label for="shipcity">City</label>
-                                                            <input type="text" class="form-control" id="shipcity"
+                                                            <input type="text" class="form-control" id="shipcity1"
                                                                    name="shipcity"
                                                                    placeholder="City">
                                                             <div class="invalid-feedback">Please provide a valid City</div>
@@ -1191,7 +1191,7 @@
                                                         <div class="form-row">
                                                             <label for="shipstate">State</label>
                                                             <select type="text" class="form-control" id="plosu" name="shipstate">
-                                                                <option id="shipst" selected>Choose</option>
+                                                                <option id="shipst1" selected>Choose</option>
                                                                 <option value="Andaman and Nicobar Islads">Andaman and Nicobar Islads
                                                                 </option>
                                                                 <option value="Andhra Predhesh">Andhra Predhesh</option>
@@ -1240,7 +1240,7 @@
                                                     <div class="col-md-6 mt-3">
                                                         <div class="form-row">
                                                             <label for="shippinco">Pin Code</label>
-                                                            <input type="text" class="form-control" id="shippinco"
+                                                            <input type="text" class="form-control" id="shippinco1"
                                                                    name="shippincode"
                                                                    placeholder="PIN code">
                                                             <div class="invalid-feedback">Please provide a valid Pin Code</div>
@@ -1249,7 +1249,7 @@
                                                     <div class="col-md-6 mt-3">
                                                         <div class="form-row">
                                                             <label for="shipcountry">Country</label>
-                                                            <input type="text" class="form-control" id="shipcountry"
+                                                            <input type="text" class="form-control" id="shipcountry1"
                                                                    name="shipcountry"
                                                                    placeholder="Country">
                                                             <div class="invalid-feedback">Please provide a valid Country</div>
@@ -1377,18 +1377,13 @@
                                         <div class="row">
                                             <div class="col-md-4 mt-2">
                                                 <label for="validationCustom02">HSN Code</label>
-                                                <input type="text" name="hsn" class="form-control" placeholder="Enter a valid HSN code"
-                                                pattern="[0-9]{8}" maxlength="8" title=" Maximum 8 digits, characters not allowed">
-                                                <a href="https://www.cbic.gov.in/resources//htdocs-cbec/gst/goods-rates-booklet-03July2017.pdf"
-                                                    target="_blank" style="font-style: italic"><h6 class="form-card mt-1" style="color: #3dd5f3">
-                                                    Not sure about HSN code..? click here</h6>
-                                                </a>
-                                                
+                                                <input type="text" name="hsn" class="form-control" placeholder="Enter a valid HSN code" required>  
                                             </div>
                                             <div class="col-md-3 mt-5"><label for="">Tax Preference : </label></div>
                                             <div class="col-md-2 mt-5">
                                                 <div class="form-check">
-                                                    <input class="form-check-input" name="taxref" type="checkbox" value="Taxable" >Taxable
+                                                    <input class="form-check-input" name="taxref" type="checkbox" value="Taxable" id="inclusive"
+                                                    checked >Taxable
                                                 </div>
                                             </div>
                                             <div class="col-md-2 mt-5">
@@ -1415,7 +1410,7 @@
                                             <div class="col-md-4 mt-2">
                                                 <label for="">Account</label>
                                                 <select name="pur_account" class="form-control">
-                                                    <option >Cost of Goods Sold</option>
+                                                    
                                                     {% for a in acc1 %}
                                                         <option value="goods">{{ a.name }}</option>
                                                     {% endfor %}
@@ -1443,8 +1438,8 @@
                                             <div class="col-md-4 mt-2">
                                                 <label for="">Account</label>
                                                 <select name="sale_account" class="form-control">
-                                                    <option >Cost of Goods Sold</option>
-                                                    {% for a in acc1 %}
+                                                    
+                                                    {% for a in acc2 %}
                                                         <option value="goods">{{ a.name }}</option>
                                                     {% endfor %}
                                                 </select>
@@ -1464,7 +1459,7 @@
                                             <div class="col-md-6 mt-2">
                                                 <label for="">Intra State Tax Rate</label>
                                                 <select name="intra_st" class="form-control">
-                                                    <option selected disabled>Choose...</option>
+                                                    <option selected >Choose...</option>
                                                     <option value=0>GST 0 (0%)</option>
                                                     <option value=5>GST 5 (5%)</option>
                                                     <option value=12>GST 12 (12%)</option>
@@ -1476,7 +1471,7 @@
                                             <div class="col-md-6 mt-2">
                                                 <label for="">Inter State Tax Rate</label>
                                                 <select name="inter_st" class="form-control">
-                                                    <option selected disabled>Choose...</option>
+                                                    <option selected >Choose...</option>
                                                     <option value=0>IGST 0 (0%)</option>
                                                     <option value=5>IGST 5 (5%)</option>
                                                     <option value=12>IGST 12 (12%)</option>
@@ -1502,13 +1497,13 @@
                                             <div class="col-md-6 mt-2">
                                                 <label for="">Inventory Account</label>
                                                 <select name="invacc" class="form-control">
-                                                    <option selected disabled>Choose...</option>
+                                                    <option selected value="">Choose...</option>
                                                     <option value="Inventory Assets">Inventory Assets</option>
                                                 </select>
                                             </div>
                                             <div class="col-md-6 mt-2">
                                                 <label for="">Stock on hand</label>
-                                                <input type="number" name="stock" class="form-control">
+                                                <input type="number" name="stock" value="0" class="form-control">
                                             </div>
                                         
                                         </div>
@@ -1520,14 +1515,15 @@
                                             <div class="col-md-4 mt-2">
                                                 <div class="form-check">
                                                     <input class="form-check-input" value="Active" type="radio" name="status" id="flexRadioDefault1">
-                                                    <label class="form-check-label" for="flexRadioDefault1">
+                                                    <label class="form-check-label" for="flexRadioDefault1" >
                                                     Active
                                                     </label>
                                                 </div>
                                             </div>
                                             <div class="col-md-4 mt-2">
                                                 <div class="form-check">
-                                                    <input class="form-check-input" value="Inactive" type="radio" name="status" id="flexRadioDefault2" >
+                                                    <input class="form-check-input" value="Inactive" type="radio" name="status" id="flexRadioDefault2" 
+                                                    checked>
                                                     <label class="form-check-label" for="flexRadioDefault2">
                                                     Inactive
                                                     </label>
@@ -1613,6 +1609,23 @@
                 document.getElementById('shipstate').value = '';
                 document.getElementById('shippinco').value = '';
                 document.getElementById('shipcountry').value = '';
+            }
+        }
+        function poppins1() {
+            var chkbtn = document.getElementById('okay1');
+            if (chkbtn.checked == true) {
+                document.getElementById('shipstreet1').value = document.getElementById('street1').value;
+                document.getElementById('shipcity1').value = document.getElementById('city1').value;
+                document.getElementById('shippinco1').value = document.getElementById('pinco1').value;
+                document.getElementById('shipcountry1').value = document.getElementById('country1').value;
+                document.getElementById('shipst1').value = document.getElementById('state1').value;
+                document.getElementById('shipst1').innerHTML = document.getElementById('state1').value;
+            } else {
+                document.getElementById('shipstreet1').value = '';
+                document.getElementById('shipcity1').value = '';
+                document.getElementById('shipstate1').value = '';
+                document.getElementById('shippinco1').value = '';
+                document.getElementById('shipcountry1').value = '';
             }
         }
     </script>
@@ -1874,12 +1887,13 @@
             let z=Math.round(tcs)
             disc0=discount
             
-            var amount =taxamount + total + tcs 
+            var amount =taxamount + total - tcs 
             let x =Math.round(amount)
             let y =Math.round(x-disc0)
+            var gt = amount-disc0
             
-            $('#tcs_amount').val((z).toFixed(2));
-            $('#grandtotal').val(parseFloat(y.toFixed(2)));
+            $('#tcs_amount').val(parseFloat(tcs.toFixed(2)));
+            $('#grandtotal').val(parseFloat(gt.toFixed(2)));
             $('#due').val(parseFloat(y.toFixed(2)));
             $('#round_off').val(parseFloat(y.toFixed(2)));
             // $('#grandtotal').val((y).toFixed(2));
@@ -1958,7 +1972,7 @@
                             <input type="text" name='hsn[]' id="hsn1${roinc}" placeholder='Enter HSN Code' class="form-control"/>
                         </td>                
                         <td><input type="number" name='quantity[]' onchange="qtychange1(this)" placeholder='Enter Qty' id="qty1" class="form-control qty" step=0 min=0>
-                            <div><span>Available Qty :</span> <span id="qtyspan${roinc}"class='text-muted'></span></div>
+                            
                         </td>                
                         <td>
                             <input type="number" name='price[]' id="unit1${roinc}" placeholder='Enter Rate' class="form-control price" step="0.00" min="0">
@@ -2017,12 +2031,11 @@
                 success:function(response){
                     console.log(response)
                     data = response.hsn
-                    data2 = response.qty
+                    
                     data3 = response.price
                     data4 = response.gst
                     data5 = response.sgst
                     document.getElementById('hsn1').value = data
-                    document.getElementById('qtyspan').innerHTML = data2;
                     document.getElementById('unit1').value = data3
                     if (place == '{{ cmp1.state }}'){
                         document.getElementById('ta1').innerHTML = data4 + ' % GST';
@@ -2045,12 +2058,12 @@
                 success:function(response){
                     console.log(response)
                     data = response.hsn
-                    data2 = response.qty
+                    
                     data3 = response.price
                     data4 = response.gst
                     data5 = response.sgst
                     document.getElementById('hsn11').value = data
-                    document.getElementById('qtyspan1').innerHTML = data2;
+                    
                     document.getElementById('unit11').value = data3
                     if (place == '{{ cmp1.state }}')
                     {
@@ -2074,12 +2087,12 @@
                 success:function(response){
                     console.log(response)
                     data = response.hsn
-                    data1 = response.qty
+                   
                     data2 = response.price
                     data3 = response.gst
                     data4 = response.sgst
                     document.getElementById('hsn12').value = data
-                    document.getElementById('qtyspan2').innerHTML = data1;
+                    
                     document.getElementById('unit12').value = data2            
                     if (supply == '{{ cmp1.state }}')
                         {
@@ -2103,12 +2116,12 @@
                 success:function(response){
                     console.log(response)
                     data = response.hsn
-                    data1 = response.qty
+                    
                     data2 = response.price
                     data3 = response.gst
                     data4 = response.sgst
                     document.getElementById('hsn13').value = data
-                    document.getElementById('qtyspan3').innerHTML = data1;
+                    
                     document.getElementById('unit13').value = data2
                     if (supply == '{{ cmp1.state }}')
                     {
@@ -2132,12 +2145,12 @@
                 success:function(response){
                     console.log(response)
                     data = response.hsn
-                    data2 = response.qty
+                    
                     data3 = response.price
                     data4 = response.gst
                     data5 = response.sgst
                     document.getElementById('hsn14').value = data
-                    document.getElementById('qtyspan4').innerHTML = data2;
+                    
                     document.getElementById('unit14').value = data3
                     if (place == '{{ cmp1.state }}')
                     {
@@ -2161,12 +2174,12 @@
                 success:function(response){
                     console.log(response)
                     data = response.hsn
-                    data2 = response.qty
+                    
                     data3 = response.price
                     data4 = response.gst
                     data5 = response.sgst
                     document.getElementById('hsn15').value = data
-                    document.getElementById('qtyspan5').innerHTML = data2;
+                    
                     document.getElementById('unit15').value = data3
                     if (place == '{{ cmp1.state }}'){
                         document.getElementById('ta15').innerHTML = data4 + ' % GST';
@@ -2189,12 +2202,12 @@
                 success:function(response){
                     console.log(response)
                     data = response.hsn
-                    data2 = response.qty
+                   
                     data3 = response.price
                     data4 = response.gst
                     data5 = response.sgst
                     document.getElementById('hsn16').value = data
-                    document.getElementById('qtyspan6').innerHTML = data2;
+                    
                     document.getElementById('unit16').value = data3
                     if (place == '{{ cmp1.state }}'){
                         document.getElementById('ta16').innerHTML = data4 + ' % GST';
@@ -2217,12 +2230,12 @@
                 success:function(response){
                     console.log(response)
                     data = response.hsn  
-                    data2 = response.qty
+                   
                     data3 = response.price
                     data4 = response.gst
                     data5 = response.sgst
                     document.getElementById('hsn17').value = data 
-                    document.getElementById('qtyspan7').innerHTML = data2;
+                    
                     document.getElementById('unit17').value = data3
                     if (place == '{{ cmp1.state }}'){
                         document.getElementById('ta17').innerHTML = data4 + ' % GST';
@@ -2245,12 +2258,12 @@
                 success:function(response){
                     console.log(response)
                     data = response.hsn
-                    data2 = response.qty
+                    
                     data3 = response.price
                     data4 = response.gst
                     data5 = response.sgst        
                     document.getElementById('hsn18').value = data        
-                    document.getElementById('qtyspan8').innerHTML = data2;
+                   
                     document.getElementById('unit18').value = data3
                     if (place == '{{ cmp1.state }}'){
                         document.getElementById('ta18').innerHTML = data4 + ' % GST';
@@ -2273,13 +2286,11 @@
                 success:function(response){
                             console.log(response)
                             data = response.hsn
-                            
-                            data2 = response.qty
                             data3 = response.price
                             data4 = response.gst
                     data5 = response.sgst       
                     document.getElementById('hsn19').value = data   
-                    document.getElementById('qtyspan9').innerHTML = data2;
+                   
                     document.getElementById('unit19').value = data3        
                     if (place == '{{ cmp1.state }}'){
                         document.getElementById('ta19').innerHTML = data4 + ' % GST';
@@ -2302,12 +2313,12 @@
                 success:function(response){
                     console.log(response)
                     data = response.hsn
-                    data2 = response.qty
+                   
                     data3 = response.price
                     data4 = response.gst
                     data5 = response.sgst       
                     document.getElementById('hsn110').value = data
-                    document.getElementById('qtyspan10').innerHTML = data2;
+                    
                     document.getElementById('unit110').value = data3        
                     if (place == '{{ cmp1.state }}'){
                         document.getElementById('ta110').innerHTML = data4 + ' % GST';
@@ -2330,12 +2341,12 @@
                 success:function(response){
                     console.log(response)
                     data = response.hsn
-                    data2 = response.qty
+                   
                     data3 = response.price
                     data4 = response.gst
                     data5 = response.sgst                      
                     document.getElementById('hsn111').value = data
-                    document.getElementById('qtyspan11').innerHTML = data2;
+                    
                     document.getElementById('unit111').value = data3        
                     if (place == '{{ cmp1.state }}'){
                         document.getElementById('ta111').innerHTML = data4 + ' % GST';
@@ -2358,12 +2369,12 @@
                 success:function(response){
                     console.log(response)
                     data = response.hsn
-                    data2 = response.qty
+                   
                     data3 = response.price
                     data4 = response.gst
                     data5 = response.sgst
                     document.getElementById('hsn112').value = data
-                    document.getElementById('qtyspan12').innerHTML = data2;
+                    
                     document.getElementById('unit112').value = data3
                     if (place == '{{ cmp1.state }}')
                     {
@@ -2387,12 +2398,12 @@
                 success:function(response){
                     console.log(response)
                     data = response.hsn
-                    data2 = response.qty
+                    
                     data3 = response.price
                     data4 = response.gst
                     data5 = response.sgst       
                     document.getElementById('hsn113').value = data
-                    document.getElementById('qtyspan13').innerHTML = data2;
+                    
                     document.getElementById('unit113').value = data3        
                     if (place == '{{ cmp1.state }}')
                     {
@@ -2416,12 +2427,12 @@
                 success:function(response){
                     console.log(response)
                     data = response.hsn
-                    data2 = response.qty
+                    
                     data3 = response.price
                     data4 = response.gst
                     data5 = response.sgst       
                     document.getElementById('hsn114').value = data
-                    document.getElementById('qtyspan14').innerHTML = data2;
+                    
                     document.getElementById('unit114').value = data3        
                     if (place == '{{ cmp1.state }}')
                     {
@@ -2446,13 +2457,11 @@
                     console.log(response)
                     data = response.hsn
                     data1 = response.desp
-                    data2 = response.qty
+                    
                     data3 = response.price
                     data4 = response.gst
                     data5 = response.sgst
                     document.getElementById('hsn115').value = data
-                    document.getElementById('description15').value = data1
-                    document.getElementById('qtyspan15').innerHTML = data2;
                     document.getElementById('unit115').value = data3
                     if (place == '{{ cmp1.state }}'){
                         document.getElementById('ta115').innerHTML = data4 + ' % GST';
@@ -2475,12 +2484,12 @@
                 success:function(response){
                     console.log(response)
                     data = response.hsn
-                    data2 = response.qty
+                    
                     data3 = response.price
                     data4 = response.gst
                     data5 = response.sgst        
                     document.getElementById('hsn116').value = data
-                    document.getElementById('qtyspan16').innerHTML = data2;
+                   
                     document.getElementById('unit116').value = data3        
                     if (place == '{{ cmp1.state }}')
                     {
@@ -2504,12 +2513,12 @@
                 success:function(response){
                     console.log(response)
                     data = response.hsn
-                    data2 = response.qty
+                    
                     data3 = response.price
                     data4 = response.gst
                     data5 = response.sgst
                     document.getElementById('hsn117').value = data
-                    document.getElementById('qtyspan17').innerHTML = data2;
+                    
                     document.getElementById('unit117').value = data3
                     if (place == '{{ cmp1.state }}')
                     {
@@ -2534,12 +2543,12 @@
                 success:function(response){
                     console.log(response)
                     data = response.hsn
-                    data2 = response.qty
+                    
                     data3 = response.price
                     data4 = response.gst
                     data5 = response.sgst        
                     document.getElementById('hsn118').value = data
-                    document.getElementById('qtyspan18').innerHTML = data2;
+                    
                     document.getElementById('unit118').value = data3        
                     if (place == '{{ cmp1.state }}')
                     {
@@ -2563,12 +2572,12 @@
                 success:function(response){
                         console.log(response)
                         data = response.hsn
-                        data2 = response.qty
+                
                         data3 = response.price
                         data4 = response.gst
                         data5 = response.sgst   
                         document.getElementById('hsn119').value = data
-                        document.getElementById('qtyspan19').innerHTML = data2;
+                       
                         document.getElementById('unit119').value = data3        
                     if (place == '{{ cmp1.state }}')
                     {
@@ -2592,12 +2601,12 @@
                 success:function(response){
                     console.log(response)
                     data = response.hsn
-                    data2 = response.qty
+                   
                     data3 = response.price
                     data4 = response.gst
                     data5 = response.sgst
                     document.getElementById('hsn120').value = data
-                    document.getElementById('qtyspan20').innerHTML = data2;
+                   
                     document.getElementById('unit120').value = data3
                     if (place == '{{ cmp1.state }}')
                     {
