@@ -38,6 +38,7 @@ class company(models.Model):
     ctype = models.CharField(max_length=100)
     abt = models.CharField(max_length=100)
     paid = models.CharField(max_length=100)
+    gstno =models.CharField(max_length=100, default='',null=True)
 
 class customer(models.Model):
     customerid = models.AutoField(('CUSTID'), primary_key=True)
@@ -1201,7 +1202,7 @@ class itemtable(models.Model):
     purchase_cost = models.IntegerField(default='0',null=True,blank=True)
     sales_cost = models.CharField(max_length=100,null=True)
     itmdate = models.DateField(null=True)
-    # tax_rate = models.CharField(max_length=100,null=True)
+
     acount_pur = models.CharField(max_length=100,null=True)
     account_sal = models.CharField(max_length=100,null=True)
     pur_desc = models.CharField(max_length=100,null=True)
@@ -1588,11 +1589,11 @@ class item_stock(models.Model):
     initm = models.ForeignKey(invoice_item,on_delete=models.CASCADE,blank=True,null=True)
 
 
-class customer_payment(models.Model):
-    customerpymid = models.AutoField(('CUSTPYMID'), primary_key=True)
-    cid = models.ForeignKey(company, on_delete=models.CASCADE)
+class banking_payment(models.Model):
+    bnkpymid = models.AutoField(('BNK_PYM_ID'), primary_key=True)
     accounts1id = models.ForeignKey(accounts1,blank=True,null=True, on_delete=models.CASCADE)
-    customer=models.CharField(max_length=100)
+    cid = models.ForeignKey(company, on_delete=models.CASCADE)
+    customer=models.CharField(max_length=100,null=True)
     vendor=models.CharField(max_length=100,null=True)
     amount_received=models.CharField(max_length=100)
     date=models.DateField(null=True)
@@ -1602,32 +1603,36 @@ class customer_payment(models.Model):
     file = models.FileField(upload_to='Customer',default="default.jpg")
     des= models.CharField(max_length=100, null=True)
     running_bal=models.CharField(max_length=100)
-
-class vendor_payment(models.Model):
-    vendorpymid = models.AutoField(('CUSTPYMID'), primary_key=True)
-    cid = models.ForeignKey(company, on_delete=models.CASCADE)
-    accounts1id = models.ForeignKey(accounts1,blank=True,null=True, on_delete=models.CASCADE)
-    vendor=models.CharField(max_length=100)
-    customer=models.CharField(max_length=100,null=True)
-    amount_received=models.CharField(max_length=100)
-    date=models.DateField(null=True)
     paid_through=models.CharField(max_length=100)
     ref_no=models.CharField(max_length=100,null=True)
     account=models.CharField(max_length=100,null=True)
-    des= models.CharField(max_length=100, null=True)
-    running_bal=models.CharField(max_length=100)
-
-class expense_banking(models.Model):
-    expenseid = models.AutoField(('exid'), primary_key=True)
-    cid = models.ForeignKey(company, on_delete=models.CASCADE)
-    accounts1id = models.ForeignKey(accounts1,blank=True,null=True, on_delete=models.CASCADE)
-    date = models.DateField(null=True)
     expenseaccount = models.CharField(max_length=100,null=True)
-    amount = models.IntegerField(null=True)  
-    vendor = models.CharField(max_length=100,null=True)
-    customer = models.CharField(max_length=100,null=True)
-    
     reference = models.CharField(max_length=100,null=True)
-    note = models.CharField(max_length=255,null=True)
-    file = models.FileField(upload_to='purchase/expense',default="default.png")
-    running_bal=models.CharField(max_length=100)
+    pym_type = models.CharField(max_length=100,null=True)
+    status=models.CharField(max_length=100,null=True)
+
+    
+
+
+class salescreditnote(models.Model):
+    screditid = models.AutoField(('pdid'), primary_key=True)
+    cid = models.ForeignKey(company, on_delete=models.CASCADE,null=True)
+    credit_no = models.IntegerField(default=1000)
+    customer = models.CharField(max_length=100,null=True)
+    address = models.TextField(null=True)
+    creditdate = models.DateField(null=True)
+    email = models.CharField(max_length=100,null=True)
+    supply = models.CharField(max_length=150,null=True)
+    billno = models.CharField(max_length=100,null=True)
+    subtotal = models.CharField(max_length=100,null=True)
+    taxamount = models.CharField(max_length=100,null=True)
+    grandtotal = models.CharField(max_length=100,null=True)
+
+class salescreditnote1(models.Model):
+    scredit = models.ForeignKey(salescreditnote, on_delete=models.CASCADE,null=True)
+    items = models.CharField(max_length=100,null=True)
+    hsn = models.CharField(max_length=100,null=True)
+    quantity = models.IntegerField(null=True)
+    price = models.CharField(max_length=100,null=True)
+    tax = models.CharField(max_length=100,null=True)
+    total = models.CharField(max_length=100,null=True)
