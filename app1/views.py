@@ -26358,6 +26358,45 @@ def estimate_view(request,id):
 
     return render(request,'app1/estimate_view.html',context)
 
+def render_pdfestimate_view(request,id):
+
+    cmp1 = company.objects.get(id=request.session['uid'])
+    upd = estimate.objects.get(estimateid=id, cid=cmp1)
+
+    estitem = estimate_item.objects.filter(estimate=id)
+
+    total = upd.estimatetotal
+    words_total = num2words(total)
+    template_path = 'app1/pdfestimate.html'
+    context ={
+        'estimate':upd,
+        'cmp1':cmp1,
+        'estitem':estitem,
+
+    }
+    fname=upd.estimateid
+   
+    # Create a Django response object, and specify content_type as pdftemp_creditnote
+    response = HttpResponse(content_type='application/pdf')
+    #response['Content-Disposition'] = 'attachment; filename="certificate.pdf"'
+    response['Content-Disposition'] =f'attachment; filename= {fname}.pdf'
+    # find the template and render it.
+    template = get_template(template_path)
+    html = template.render(context)
+
+    # create a pdf
+    pisa_status = pisa.CreatePDF(
+       html, dest=response)
+    
+
+
+    # if error then show some funy view
+    if pisa_status.err:
+       return HttpResponse('We had some errors <pre>' + html + '</pre>')
+    return response
+
+
+
 
 def convert1(request,id):
     cmp1 = company.objects.get(id=request.session['uid'])
@@ -26709,6 +26748,46 @@ def sales_order_view(request,id):
 
 
     return render(request,'app1/sales_order_view.html',context)
+
+
+def render_pdfsalesorder_view(request,id):
+
+    cmp1 = company.objects.get(id=request.session['uid'])
+    upd = salesorder.objects.get(id=id, cid=cmp1)
+
+    saleitem = sales_item.objects.filter(salesorder=id)
+
+    total = upd.salestotal
+    words_total = num2words(total)
+    template_path = 'app1/pdfsalesorder.html'
+    context ={
+        'sale':upd,
+        'cmp1':cmp1,
+        'saleitem':saleitem
+
+    }
+    fname=upd.id
+   
+    # Create a Django response object, and specify content_type as pdftemp_creditnote
+    response = HttpResponse(content_type='application/pdf')
+    #response['Content-Disposition'] = 'attachment; filename="certificate.pdf"'
+    response['Content-Disposition'] =f'attachment; filename= {fname}.pdf'
+    # find the template and render it.
+    template = get_template(template_path)
+    html = template.render(context)
+
+    # create a pdf
+    pisa_status = pisa.CreatePDF(
+       html, dest=response)
+    
+
+
+    # if error then show some funy view
+    if pisa_status.err:
+       return HttpResponse('We had some errors <pre>' + html + '</pre>')
+    return response
+
+
 
 
 @login_required(login_url='regcomp')

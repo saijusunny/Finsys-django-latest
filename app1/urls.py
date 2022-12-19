@@ -798,6 +798,8 @@ urlpatterns = [
     path('bnk_disables/<int:pk>', views.bnk_disables, name='bnk_disables'),
     path('delete_recon/<int:pk>', views.delete_recon, name='delete_recon'),
     path('render_pdfpayment_view/<int:id>', views.render_pdfpayment_view, name='render_pdfpayment_view'),
+    path('render_pdfestimate_view/<int:id>', views.render_pdfestimate_view, name='render_pdfestimate_view'),
+    path('render_pdfsalesorder_view/<int:id>', views.render_pdfsalesorder_view, name='render_pdfsalesorder_view'),
 
     
 
