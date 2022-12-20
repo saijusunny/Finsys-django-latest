@@ -120,10 +120,14 @@ $('#baldue').val(parseFloat(x .toFixed(2)));
 </script>
   <script>
   $(document).ready(function(){
+    
     var roinc = 0
   $('#add').click(function(){
+    
+    var roinc = document.getElementById("tab_logic").rows.length;
+    
     roinc++
-  $('#items-table-body').append(
+  $('#tab_logic').append(
 
 
   `
@@ -154,7 +158,7 @@ $('#baldue').val(parseFloat(x .toFixed(2)));
                     </td>
                     <td><input type="text" name='hsn[]' id="hsn1${roinc}" placeholder='Enter HSN Code' class="form-control" style="background-color: #2f516f; color: white;" /></td>
                     <td><input type="text" name='description[]' id="description${roinc}" placeholder='Description' class="form-control" style="background-color: #2f516f; color: white;" /></td>
-                    <td><input type="number" name='qty[]' onchange="qtychange1(this)" placeholder='Enter Qty' id="qty1" class="form-control qty" step=0 min=0 style="background-color: #2f516f; color: white;" /><div><span>Available Qty :</span> <span id="qtyspan${roinc}" class=''></span></div>
+                    <td><input type="number" name='qty[]' onchange="qtychange1(this)" placeholder='Enter Qty' id="qty1" class="form-control qty" step=0 min=0 style="background-color: #2f516f; margin-top: 21px;  color: white;" /><div><span>Available Qty :</span> <span id="qtyspan${roinc}" class=''></span></div>
                       
                     </td>
                     <td><input type="number" name='price[]' id="unit1${roinc}" placeholder='Enter Unit Price' class="form-control price" step="0.00" min="0" style="background-color: #2f516f; color: white;" /></td>
@@ -190,7 +194,11 @@ $('#baldue').val(parseFloat(x .toFixed(2)));
                     <td><input type="number" name='total[]' id="total1" placeholder=0 class="form-control total" value=0 step="any" readonly style="background-color: #2f516f; color: white;" /></td>
                     <td style="display: none;"><input type="number" step="any" name='taxamount1' id="taxamount1" class="form-control taxamount" />
                     </td>
+                    <td><button type="button" id="${roinc}" class="btn btn-danger remove_row">-
+                    </button></td>
                   </tr>
+                  
+                  
   
   `
     
@@ -198,8 +206,11 @@ $('#baldue').val(parseFloat(x .toFixed(2)));
  );
   });
   $(document).on('click','.remove_row',function(){
+  
   var row_id = $(this).attr("id");
+  document.write(row_id)
   $('#row'+row_id+'').remove();
+  
   });
   // $(document).on('click','#product1',function(){
     var place = document.getElementById('plosu').value;
@@ -1359,7 +1370,7 @@ $('#baldue').val(parseFloat(x .toFixed(2)));
                     </td>
                     <td><input type="text" name='hsn[]'  value="{{ j.hsn }}" id="hsn1{{ forloop.counter }}" placeholder='Enter HSN Code' class="form-control" style="background-color: #2f516f; color: white;" /></td>
                     <td><input type="text" name='description[]'  value="{{ j.description }}"  id="description{{ forloop.counter }}" placeholder='Description' class="form-control" style="background-color: #2f516f; color: white;" /></td>
-                    <td><input type="number" name='qty[]' value="{{ j.qty }}" onchange="qtychange1(this)" placeholder='Enter Qty' id="qty1" value=0 class="form-control qty" step=0 min=0 style="background-color: #2f516f; color: white;" />
+                    <td><input type="number" name='qty[]' value="{{ j.qty }}" onchange="qtychange1(this)" placeholder='Enter Qty' id="qty1" value=0 class="form-control qty" step=0 min=0 style="background-color: #2f516f;margin-top: 21px;  color: white;" />
                       <div><span>Available Qty :</span><span id="qtyspan{{ forloop.counter }}" class=''></span></div>
                     </td>
                     <td><input type="number" name='price[]' value="{{ j.price }}" id="unit1{{ forloop.counter }}" placeholder='Enter Unit Price' class="form-control price" step="0.00" min="0" style="background-color: #2f516f; color: white;" /></td>
@@ -1399,12 +1410,22 @@ $('#baldue').val(parseFloat(x .toFixed(2)));
                     <td><input type="number" name='total[]' value="{{ j.total }}" id="total1{{ forloop.counter }}" placeholder=0 class="form-control total" value=0 step="any" readonly style="background-color: #2f516f; color: white;" /></td>
                     <td style="display: none;"><input type="number" step="any" name='taxamount1' id="taxamount1" class="form-control taxamount" />
                     </td>
+                    <td><button type="button" id="${roinc}" class="btn btn-danger remove_row">-
+                    </button></td>
                   </tr>
+                  
+                  
+                  
                   {% endfor %}
+                  
 
 
                 </tbody>
+                
               </table>
+              <tr>
+                <td style="border: none;"><a class="btn btn-outline-secondary ml-1" role="button" id="add" >+</a></td>
+              </tr>
 
             </div>
           </div>

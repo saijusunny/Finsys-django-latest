@@ -28521,12 +28521,14 @@ def payment_view(request,id):
     if x[2] is not None:
         b = x[1] + " " + x[2]
         custobject = customer.objects.get(firstname=a, lastname=b, cid=cmp1)
+    inv_dtl=invoice.objects.filter(invoiceno=pay.referno)
     
-
+  
     context = {
         'pay':pay ,
         'cmp1':cmp1,
-        'custobject':custobject
+        'custobject':custobject,
+        'inv_dtl':inv_dtl,
     }
 
     return render(request,'app1/payment_view.html',context)
@@ -28545,6 +28547,7 @@ def render_pdfpayment_view(request,id):
         custobject = customer.objects.get(firstname=a, lastname=b, cid=cmp1)
     
     inv_dtl=invoice.objects.filter(invoiceno=pay.referno)
+    
     total = pay.amtapply
     words_total = num2words(total)
     template_path = 'app1/pdfpayment.html'
