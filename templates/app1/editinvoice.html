@@ -30,6 +30,7 @@
 
   function calc() {
     $('#tab_logic tbody tr').each(function() {
+      
       var html = $(this).html();
       if (html != '') {
         var qty = $(this).find('.qty').val();
@@ -46,10 +47,12 @@
     total = 0;
     $('.total').each(function() {
       total += parseFloat($(this).val());
+      
     });
     taxamount = 0.0;
     $('.taxamount').each(function() {
       taxamount += parseFloat($(this).val());
+      
     });
     $('#subtotal').val(parseFloat(total.toFixed(2)));
     
@@ -126,13 +129,13 @@ $('#baldue').val(parseFloat(x .toFixed(2)));
     
     var roinc = document.getElementById("tab_logic").rows.length;
     
-    roinc++
+   
   $('#tab_logic').append(
 
 
   `
   <tr id='addr0${roinc}'>
-                    <td>${roinc+1}</td>
+                    <td>${roinc}</td>
                     <td style="width: 20%;">
                       <div class="d-flex">
                       <select name='product[]' id="product${roinc}" class="form-control" style="background-color: #2f516f; color: white;">
@@ -158,7 +161,7 @@ $('#baldue').val(parseFloat(x .toFixed(2)));
                     </td>
                     <td><input type="text" name='hsn[]' id="hsn1${roinc}" placeholder='Enter HSN Code' class="form-control" style="background-color: #2f516f; color: white;" /></td>
                     <td><input type="text" name='description[]' id="description${roinc}" placeholder='Description' class="form-control" style="background-color: #2f516f; color: white;" /></td>
-                    <td><input type="number" name='qty[]' onchange="qtychange1(this)" placeholder='Enter Qty' id="qty1" class="form-control qty" step=0 min=0 style="background-color: #2f516f; margin-top: 21px;  color: white;" /><div><span>Available Qty :</span> <span id="qtyspan${roinc}" class=''></span></div>
+                    <td><input type="number" name='qty[]' onchange="qtychange1(this)" placeholder='Enter Qty' id="qty1${roinc}" class="form-control qty" step=0 min=0 style="background-color: #2f516f; margin-top: 21px;  color: white;" /><div><span>Available Qty :</span> <span id="qtyspan${roinc}" class=''></span></div>
                       
                     </td>
                     <td><input type="number" name='price[]' id="unit1${roinc}" placeholder='Enter Unit Price' class="form-control price" step="0.00" min="0" style="background-color: #2f516f; color: white;" /></td>
@@ -191,7 +194,7 @@ $('#baldue').val(parseFloat(x .toFixed(2)));
                         <option value=0 text=" ">Out of Scope(0%)</option>
                       </select>
                     </td>
-                    <td><input type="number" name='total[]' id="total1" placeholder=0 class="form-control total" value=0 step="any" readonly style="background-color: #2f516f; color: white;" /></td>
+                    <td><input type="number" name='total[]' id="total1${roinc}" placeholder=0 class="form-control total" value=0 step="any" readonly style="background-color: #2f516f; color: white;" /></td>
                     <td style="display: none;"><input type="number" step="any" name='taxamount1' id="taxamount1" class="form-control taxamount" />
                     </td>
                     <td><button type="button" id="${roinc}" class="btn btn-danger remove_row">-
@@ -208,8 +211,10 @@ $('#baldue').val(parseFloat(x .toFixed(2)));
   $(document).on('click','.remove_row',function(){
   
   var row_id = $(this).attr("id");
-  document.write(row_id)
-  $('#row'+row_id+'').remove();
+  
+  $('#'+row_id).remove();
+  $('#addr0'+row_id).remove();
+  
   
   });
   // $(document).on('click','#product1',function(){
@@ -360,6 +365,7 @@ $('#baldue').val(parseFloat(x .toFixed(2)));
     });
     $(document).on('click','#product3',function(){
       select = $('#product3').val();
+      
       $.ajax({
         type: "GET",
         url: "{% url 'getitems2' %}",
@@ -391,6 +397,7 @@ $('#baldue').val(parseFloat(x .toFixed(2)));
                     
                     if (place == '{{ cmp1.state }}')
                     {
+                      document.write(data4)
                       document.getElementById('ta13').innerHTML = data4 + ' % GST';
                       document.getElementById('ta13').value=data4
 
@@ -404,6 +411,7 @@ $('#baldue').val(parseFloat(x .toFixed(2)));
     });
     $(document).on('click','#product4',function(){
       select = $('#product4').val();
+      
       $.ajax({
         type: "GET",
         url: "{% url 'getitems2' %}",
@@ -422,7 +430,8 @@ $('#baldue').val(parseFloat(x .toFixed(2)));
                     document.getElementById('hsn14').value = data
                     document.getElementById('description4').value = data1
                     document.getElementById('qtyspan4').innerHTML = data2;
-                    document.getElementById('unit14').value = data3
+                    document.getElementById('unit14').value = data3 
+                    
 
                     if (data2<1)
                     {
@@ -1337,7 +1346,7 @@ $('#baldue').val(parseFloat(x .toFixed(2)));
                 <tbody>
 
                   {% for j in invitem %}
-                  <tr id='addr0'>
+                  <tr id='addr0{{ forloop.counter }}'>
                     <td>{{ forloop.counter }}
                       <input type="text"  name="id[]" value="{{ j.id }}" hidden>
                     </td>
@@ -1350,7 +1359,7 @@ $('#baldue').val(parseFloat(x .toFixed(2)));
                             <option 
                                     value="{{ i.name  }}">{{ i.name  }} </option>
                         {% endif %}
-                    {% endfor %}
+                        {% endfor %}
                         <!-- {% for proinv in inv %}
                         {% if proinv.cid_id == cmp1.cid %}
                         <option text="{{ proinv.inventoryid }}" value="{{ proinv.name }}">{{ proinv.name }} </option>
@@ -1370,7 +1379,7 @@ $('#baldue').val(parseFloat(x .toFixed(2)));
                     </td>
                     <td><input type="text" name='hsn[]'  value="{{ j.hsn }}" id="hsn1{{ forloop.counter }}" placeholder='Enter HSN Code' class="form-control" style="background-color: #2f516f; color: white;" /></td>
                     <td><input type="text" name='description[]'  value="{{ j.description }}"  id="description{{ forloop.counter }}" placeholder='Description' class="form-control" style="background-color: #2f516f; color: white;" /></td>
-                    <td><input type="number" name='qty[]' value="{{ j.qty }}" onchange="qtychange1(this)" placeholder='Enter Qty' id="qty1" value=0 class="form-control qty" step=0 min=0 style="background-color: #2f516f;margin-top: 21px;  color: white;" />
+                    <td><input type="number" name='qty[]' value="{{ j.qty }}" onchange="qtychange1(this)" placeholder='Enter Qty' id="qty1{{ forloop.counter }}" value=0 class="form-control qty" step=0 min=0 style="background-color: #2f516f;margin-top: 21px;  color: white;" />
                       <div><span>Available Qty :</span><span id="qtyspan{{ forloop.counter }}" class=''></span></div>
                     </td>
                     <td><input type="number" name='price[]' value="{{ j.price }}" id="unit1{{ forloop.counter }}" placeholder='Enter Unit Price' class="form-control price" step="0.00" min="0" style="background-color: #2f516f; color: white;" /></td>
@@ -1410,7 +1419,7 @@ $('#baldue').val(parseFloat(x .toFixed(2)));
                     <td><input type="number" name='total[]' value="{{ j.total }}" id="total1{{ forloop.counter }}" placeholder=0 class="form-control total" value=0 step="any" readonly style="background-color: #2f516f; color: white;" /></td>
                     <td style="display: none;"><input type="number" step="any" name='taxamount1' id="taxamount1" class="form-control taxamount" />
                     </td>
-                    <td><button type="button" id="${roinc}" class="btn btn-danger remove_row">-
+                    <td><button type="button" id="addr0{{ forloop.counter }}" class="btn btn-danger remove_row">-
                     </button></td>
                   </tr>
                   
@@ -2438,6 +2447,32 @@ $('#baldue').val(parseFloat(x .toFixed(2)));
     // });
   });
 </script>
+
+
+<script>
+  $('#termadd').on('change', function() {
+  
+      
+  select = $('#termadd').val();
+  dudt = $('#duedat').val();
+  $.ajax({
+    type: "GET",
+    url: "{% url 'gettermss' %}",
+    data: {
+      id: select,
+      du:dudt,
+    }
+  }).done(function(response) {
+    var json_data = JSON.parse(response);
+    for (key in json_data) {
+      document.getElementById('duedat').value = json_data[key]['newdate'];
+    }
+  }).fail(function() {
+
+  });
+  });
+</script>
+
 <script>
   function showinp(divId, element) {
     if (element.value == 'Add New Term') {
@@ -2468,10 +2503,35 @@ $('#baldue').val(parseFloat(x .toFixed(2)));
 
   function qtychange1(element) {
     var tx = parseInt(element.value);
+    document.getElementById('total13').value =parseInt(document.getElementById('qty13').value) * parseInt(document.getElementById('unit13').value);
+    document.getElementById('total14').value =parseInt(document.getElementById('qty14').value) * parseInt(document.getElementById('unit14').value);
+    document.getElementById('total15').value =parseInt(document.getElementById('qty15').value) * parseInt(document.getElementById('unit15').value);
+    document.getElementById('total16').value =parseInt(document.getElementById('qty16').value) * parseInt(document.getElementById('unit16').value);
+    document.getElementById('total17').value =parseInt(document.getElementById('qty17').value) * parseInt(document.getElementById('unit17').value);
+    document.getElementById('total18').value =parseInt(document.getElementById('qty18').value) * parseInt(document.getElementById('unit18').value);
+    document.getElementById('total19').value =parseInt(document.getElementById('qty19').value) * parseInt(document.getElementById('unit19').value);
+    document.getElementById('total110').value =parseInt(document.getElementById('qty110').value) * parseInt(document.getElementById('unit110').value);
+
+    document.getElementById('total111').value =parseInt(document.getElementById('qty111').value) * parseInt(document.getElementById('unit111').value);
+    document.getElementById('total112').value =parseInt(document.getElementById('qty112').value) * parseInt(document.getElementById('unit112').value);
+    document.getElementById('total113').value =parseInt(document.getElementById('qty113').value) * parseInt(document.getElementById('unit113').value);
+    document.getElementById('total114').value =parseInt(document.getElementById('qty114').value) * parseInt(document.getElementById('unit114').value);
+    document.getElementById('total115').value =parseInt(document.getElementById('qty115').value) * parseInt(document.getElementById('unit115').value);
+    document.getElementById('total116').value =parseInt(document.getElementById('qty116').value) * parseInt(document.getElementById('unit116').value);
+    document.getElementById('total117').value =parseInt(document.getElementById('qty117').value) * parseInt(document.getElementById('unit117').value);
+    document.getElementById('total118').value =parseInt(document.getElementById('qty118').value) * parseInt(document.getElementById('unit118').value);
+    document.getElementById('total119').value =parseInt(document.getElementById('qty119').value) * parseInt(document.getElementById('unit119').value);
+    document.getElementById('total120').value =parseInt(document.getElementById('qty120').value) * parseInt(document.getElementById('unit120').value);
+    calc()
+  
+    
+    
     document.getElementById('qty11').value = parseInt(document.getElementById('qty111').value) * tx;
     document.getElementById('qty12').value = parseInt(document.getElementById('qty121').value) * tx;
     document.getElementById('qty13').value = parseInt(document.getElementById('qty131').value) * tx;
     document.getElementById('qty14').value = parseInt(document.getElementById('qty141').value) * tx;
+    
+
   }
 
   function qtychange2(element) {
@@ -2501,29 +2561,6 @@ $('#baldue').val(parseFloat(x .toFixed(2)));
   
 </script>
 
-<script>
-  $('#termadd').on('change', function() {
-  
-      
-  select = $('#termadd').val();
-  dudt = $('#duedat').val();
-  $.ajax({
-    type: "GET",
-    url: "{% url 'gettermss' %}",
-    data: {
-      id: select,
-      du:dudt,
-    }
-  }).done(function(response) {
-    var json_data = JSON.parse(response);
-    for (key in json_data) {
-      document.getElementById('duedat').value = json_data[key]['newdate'];
-    }
-  }).fail(function() {
-
-  });
-  });
-</script>
 <script>
   $(document).ready(function() {
     var $select1 = $('#plosu'),

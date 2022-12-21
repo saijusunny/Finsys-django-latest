@@ -28896,6 +28896,7 @@ def getitems2(request):
     price = item.sales_cost
     gst = item.intra_st
     sgst = item.inter_st
+    print(gst)
 
 
     
