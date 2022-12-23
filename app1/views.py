@@ -28889,14 +28889,14 @@ def getitems2(request):
     id = request.GET.get('id')
 
     item = itemtable.objects.get(name=id,cid=cmp1)
-    print(item)
+    
     hsn = item.hsn
     desp = item.sale_desc
     qty = item.stock
     price = item.sales_cost
     gst = item.intra_st
     sgst = item.inter_st
-    print(gst)
+   
 
 
     
@@ -33592,7 +33592,7 @@ def bnnk(request):
     cmp1 = company.objects.get(id=request.session["uid"])
     i=accounts1.objects.filter(acctype='Bank')
     c=accounts1.objects.filter(acctype='Cash')
-    u=accounts1.objects.filter(acctype='Undepposited Funds')
+    u=accounts1.objects.filter(acctype='Undeposited Funds')
     
     context={'i':i,'c':c,'u':u,'cmp1':cmp1}
     return render(request,'app1/bnk.html',context)

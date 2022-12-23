@@ -60,7 +60,7 @@
                             </thead>
                             <tbody>
                             {% for p in pdebit %}
-                                <tr onclick="window.location='viewpurchasedebit/{{ p.screditid }}';">
+                                <tr>
                                     <th>{{ p.creditdate |date:'d-m-Y' }}</th>
                                     <td>CN - {{ p.credit_no }}</td>
                                     <td>{{ p.customer }}</a></td>
